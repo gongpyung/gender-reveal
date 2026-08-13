@@ -153,45 +153,49 @@ export default function RevealCreator() {
           <div className="flex flex-col gap-1.5">
             <span className="text-xs font-semibold text-[#232323]">성별</span>
             <div className="grid grid-cols-2 gap-3">
+              <input
+                id="gender-son"
+                type="radio"
+                name="babyGender"
+                value="son"
+                checked={babyGender === "son"}
+                onChange={() => {
+                  setBabyGender("son");
+                  clearInvalid("babyGender");
+                }}
+                className="sr-only"
+              />
               <label
+                htmlFor="gender-son"
                 className={`flex h-[50px] cursor-pointer items-center justify-center rounded-xl border text-sm font-semibold transition ${
                   babyGender === "son"
                     ? "border-[#509fdf] bg-[#cae7ff]/30 text-[#509fdf]"
                     : "border-gray-200 bg-white text-[#232323]"
                 } ${invalidFields.babyGender ? "ring-2 ring-red-400" : ""}`}
               >
-                <input
-                  type="radio"
-                  name="babyGender"
-                  value="son"
-                  checked={babyGender === "son"}
-                  onChange={() => {
-                    setBabyGender("son");
-                    clearInvalid("babyGender");
-                  }}
-                  className="sr-only"
-                />
                 아들
               </label>
 
+              <input
+                id="gender-daughter"
+                type="radio"
+                name="babyGender"
+                value="daughter"
+                checked={babyGender === "daughter"}
+                onChange={() => {
+                  setBabyGender("daughter");
+                  clearInvalid("babyGender");
+                }}
+                className="sr-only"
+              />
               <label
+                htmlFor="gender-daughter"
                 className={`flex h-[50px] cursor-pointer items-center justify-center rounded-xl border text-sm font-semibold transition ${
                   babyGender === "daughter"
                     ? "border-[#ff9999] bg-[#ffd2d2]/30 text-[#ff9999]"
                     : "border-gray-200 bg-white text-[#232323]"
                 } ${invalidFields.babyGender ? "ring-2 ring-red-400" : ""}`}
               >
-                <input
-                  type="radio"
-                  name="babyGender"
-                  value="daughter"
-                  checked={babyGender === "daughter"}
-                  onChange={() => {
-                    setBabyGender("daughter");
-                    clearInvalid("babyGender");
-                  }}
-                  className="sr-only"
-                />
                 딸
               </label>
             </div>
