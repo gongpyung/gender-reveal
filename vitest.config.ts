@@ -8,6 +8,7 @@ export default defineConfig({
     globals: true,
     environment: "jsdom",
     setupFiles: ["./vitest.setup.ts"],
+    include: ["tests/**/*.test.{ts,tsx}"],
     alias: {
       "@": path.resolve(import.meta.dirname, "./"),
     },
