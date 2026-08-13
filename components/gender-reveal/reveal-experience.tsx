@@ -7,6 +7,7 @@ import {
   interactionReducer,
 } from "@/lib/reveals/interaction";
 import BalloonInteraction from "./balloon-interaction";
+import RevealResult from "./reveal-result";
 
 export type RevealExperienceProps = {
   reveal: RevealRecord;
@@ -17,6 +18,10 @@ export default function RevealExperience({ reveal }: RevealExperienceProps) {
     interactionReducer,
     initialInteractionState
   );
+
+  const handleCreateNew = () => {
+    window.location.assign("/gender-reveal");
+  };
 
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center bg-white p-4 sm:p-6">
@@ -31,15 +36,11 @@ export default function RevealExperience({ reveal }: RevealExperienceProps) {
           />
         )}
         {state.phase === "result" && (
-          <div className="flex flex-col items-center">
-            <h2 className="text-xl font-bold">결과 화면 (Task 8 구현 예정)</h2>
-            <button
-              onClick={() => dispatch({ type: "restart" })}
-              className="mt-4 rounded-lg bg-gray-200 px-4 py-2 text-sm"
-            >
-              다시 하기
-            </button>
-          </div>
+          <RevealResult
+            reveal={reveal}
+            onReplay={() => dispatch({ type: "restart" })}
+            onCreateNew={handleCreateNew}
+          />
         )}
       </section>
     </main>
