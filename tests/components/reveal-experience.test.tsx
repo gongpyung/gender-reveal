@@ -22,7 +22,7 @@ describe("RevealExperience and MissingReveal", () => {
     expect(screen.getByText("0 / 10")).toBeInTheDocument();
   });
 
-  it("renders missing reveal screen with reference message", () => {
+  it("renders the missing reveal screen message", () => {
     render(<MissingReveal />);
 
     expect(

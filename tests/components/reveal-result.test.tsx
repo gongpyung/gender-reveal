@@ -46,7 +46,7 @@ describe("RevealResult", () => {
     vi.mocked(imageShare.shareOrDownloadResult).mockResolvedValue(undefined);
   });
 
-  it("renders son reveal content with reference copy and artwork", () => {
+  it("renders the son result content and artwork", () => {
     render(
       <RevealResult
         reveal={sonReveal}
@@ -66,7 +66,7 @@ describe("RevealResult", () => {
     expect(img).toHaveAttribute("src", "/img/step3/baby-son.png");
   });
 
-  it("renders daughter reveal content with reference copy and artwork", () => {
+  it("renders the daughter result content and artwork", () => {
     render(
       <RevealResult
         reveal={daughterReveal}

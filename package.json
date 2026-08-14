@@ -1,7 +1,7 @@
 {
   "name": "gender-reveal",
   "version": "1.0.0",
-  "description": "",
+  "description": "Private, login-free gender reveal event sharing",
   "type": "module",
   "main": "index.js",
   "directories": {

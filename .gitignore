@@ -9,3 +9,4 @@ playwright-report
 e2e/screenshots/local
 .vercel
 .env*
+*.tsbuildinfo

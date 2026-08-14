@@ -1,17 +1,19 @@
-# Gender Reveal Clone
+# Gender Reveal
 
-A private-use, login-free clone of the baby gender reveal experience.
+로그인 없이 젠더리빌 이벤트를 만들고 가족과 공유할 수 있는 웹 애플리케이션입니다.
+제작자는 태명, 출산 예정일, 받는 사람과 성별을 입력해 비밀 링크를 만들고,
+받는 사람은 풍선을 열 번 터치한 뒤 결과를 확인하고 이미지로 저장할 수 있습니다.
 
 ## Features
 
-- **Creator Flow**: Input baby nickname, due date, recipient, and gender to generate a persistent share link.
-- **Recipient Flow**: Interactive balloon requiring 10 taps to burst and reveal the baby's gender.
-- **Replay & Share**: Result screen with replay option and savable/shareable result card image.
-- **Persistence**: Backed by PostgreSQL via Drizzle ORM and Neon Postgres serverless.
+- 제작자 흐름: 태명, 출산 예정일, 받는 사람, 성별을 입력해 영구 공유 링크를 생성합니다.
+- 받는 사람 흐름: 풍선을 열 번 터치해 결과를 확인합니다.
+- 결과 흐름: 다시 보기와 결과 이미지 저장을 제공합니다.
+- 저장소: Drizzle ORM과 Neon/PostgreSQL을 사용합니다.
 
 ## Prerequisites
 
-- Node.js 18+ and npm
+- Node.js `>=20.9.0` and npm
 - PostgreSQL database (or Neon Postgres)
 
 ## Local Setup
@@ -24,14 +26,9 @@ A private-use, login-free clone of the baby gender reveal experience.
 
 2. **Configure environment variables:**
 
-   Copy `.env.example` to `.env.local`:
+   Create `.env.local` with the database connection:
 
    ```bash
-   cp .env.example .env.local
-   ```
-
-   Fill in your PostgreSQL / Neon connection string:
-
    ```dotenv
    DATABASE_URL=postgresql://user:password@host/dbname?sslmode=require
    ```
@@ -60,13 +57,16 @@ npm run test:e2e
 npm run typecheck
 npm run lint
 npm run build
+npm run test:e2e:prepare
+npm run test:e2e
+npx drizzle-kit check
 git diff --check
 ```
 
 ## Production Deployment (Vercel + Neon)
 
 1. **Provision Neon Postgres on Vercel:**
-   Attach a Neon Postgres database integration to the project in the Vercel Marketplace.
+   Attach a Neon Postgres database integration to the project.
 
 2. **Pull Environment Variables:**
 
@@ -91,5 +91,13 @@ git diff --check
    ```
 
 5. **Smoke Test Production:**
-   - Create a reveal link on the production URL.
-   - Open link in another context or device, tap 10 times, verify gender reveal result.
+   - Confirm the public origin responds anonymously with HTTP 200.
+   - Create a reveal link and open it in another browser context or device.
+   - Tap 10 times, save the result image, replay, and refresh.
+
+## Architecture
+
+The application uses the Next.js App Router, React client components for transient
+interaction state, Drizzle ORM, and Neon/PostgreSQL for reveal records. Reveal
+tokens are generated from cryptographically secure random bytes. Links do not
+expire and the database stores the due date as a PostgreSQL `date`.
