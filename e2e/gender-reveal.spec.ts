@@ -10,7 +10,7 @@ test.describe("Gender Reveal E2E Journey", () => {
     });
 
     await page.goto("/gender-reveal");
-    await page.getByLabel(/아기 별명/i).fill("깡총이");
+    await page.getByLabel(/아기 태명/i).fill("깡총이");
     await page.getByLabel(/출산 예정일/i).fill("2026-12-25");
     await page.getByLabel(/받는 사람/i).fill("할머니, 할아버지");
     await page.locator("label[for='gender-son']").click();
@@ -39,7 +39,7 @@ test.describe("Gender Reveal E2E Journey", () => {
     await page.goto("/gender-reveal");
 
     // Fill creator form
-    await page.getByLabel(/아기 별명/i).fill("깡총이");
+    await page.getByLabel(/아기 태명/i).fill("깡총이");
     await page.getByLabel(/출산 예정일/i).fill("2026-12-25");
     await page.getByLabel(/받는 사람/i).fill("할머니, 할아버지");
     await page.locator("label[for='gender-daughter']").click();
@@ -81,7 +81,7 @@ test.describe("Gender Reveal E2E Journey", () => {
   test("creates a son reveal and verifies result", async ({ page }) => {
     await page.goto("/gender-reveal");
 
-    await page.getByLabel(/아기 별명/i).fill("복덩이");
+    await page.getByLabel(/아기 태명/i).fill("복덩이");
     await page.getByLabel(/출산 예정일/i).fill("2026-10-10");
     await page.getByLabel(/받는 사람/i).fill("이모");
     await page.locator("label[for='gender-son']").click();
