@@ -16,6 +16,10 @@ export async function captureResult(
   });
 
   const capturePromise = (async () => {
+    if (typeof document !== "undefined" && document.fonts?.ready) {
+      await document.fonts.ready;
+    }
+
     // Ensure all images are loaded
     const images = Array.from(element.querySelectorAll("img"));
     await Promise.all(
