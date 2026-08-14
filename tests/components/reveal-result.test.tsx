@@ -2,6 +2,18 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import RevealResult from "@/components/gender-reveal/reveal-result";
 import { RevealRecord } from "@/lib/reveals/types";
+import * as imageShare from "@/lib/reveals/image-share";
+
+vi.mock("@/lib/reveals/image-share", async () => {
+  const actual = await vi.importActual<typeof import("@/lib/reveals/image-share")>(
+    "@/lib/reveals/image-share"
+  );
+  return {
+    ...actual,
+    captureResult: vi.fn(),
+    shareOrDownloadResult: vi.fn(),
+  };
+});
 
 const sonReveal: RevealRecord = {
   token: "son-token-123",
@@ -27,6 +39,11 @@ describe("RevealResult", () => {
 
   beforeEach(() => {
     vi.restoreAllMocks();
+    vi.mocked(imageShare.captureResult).mockResolvedValue({
+      dataUrl: "data:image/png;base64,encoded",
+      file: new File(["png"], "gender-reveal-son.png", { type: "image/png" }),
+    });
+    vi.mocked(imageShare.shareOrDownloadResult).mockResolvedValue(undefined);
   });
 
   it("renders son reveal content with reference copy and artwork", () => {
@@ -84,5 +101,57 @@ describe("RevealResult", () => {
     });
     fireEvent.click(createNewButton);
     expect(onCreateNew).toHaveBeenCalledTimes(1);
+  });
+
+  it("shows preparation failure and allows retrying the capture", async () => {
+    vi.mocked(imageShare.captureResult)
+      .mockRejectedValueOnce(new Error("capture failed"))
+      .mockResolvedValueOnce({
+        dataUrl: "data:image/png;base64,encoded",
+        file: new File(["png"], "gender-reveal-son.png", { type: "image/png" }),
+      });
+
+    render(
+      <RevealResult
+        reveal={sonReveal}
+        onReplay={onReplay}
+        onCreateNew={onCreateNew}
+      />
+    );
+
+    await waitFor(() =>
+      expect(
+        screen.getByText("이미지를 준비하지 못했어요. 다시 시도해주세요")
+      ).toBeInTheDocument()
+    );
+    const saveButton = screen.getByRole("button", { name: "결과 저장하기" });
+    expect(saveButton).toBeEnabled();
+
+    fireEvent.click(saveButton);
+    await waitFor(() => expect(imageShare.captureResult).toHaveBeenCalledTimes(2));
+  });
+
+  it("shows a save failure while keeping the result visible", async () => {
+    vi.mocked(imageShare.shareOrDownloadResult).mockRejectedValueOnce(
+      new Error("save failed")
+    );
+
+    render(
+      <RevealResult
+        reveal={sonReveal}
+        onReplay={onReplay}
+        onCreateNew={onCreateNew}
+      />
+    );
+
+    await waitFor(() => expect(imageShare.captureResult).toHaveBeenCalled());
+    fireEvent.click(screen.getByRole("button", { name: "결과 저장하기" }));
+
+    await waitFor(() =>
+      expect(
+        screen.getByText("이미지 저장에 실패했어요. 다시 시도해주세요")
+      ).toBeInTheDocument()
+    );
+    expect(screen.getByText("'아들'이에요!")).toBeInTheDocument();
   });
 });

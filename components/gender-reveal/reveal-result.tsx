@@ -38,9 +38,12 @@ export default function RevealResult({
         const result = await captureResult(cardRef.current, reveal.babyGender);
         if (isMounted) {
           setPrepared(result);
+          setErrorMessage(null);
         }
-      } catch (err) {
-        console.error("Failed to prepare result image", err);
+      } catch {
+        if (isMounted) {
+          setErrorMessage("이미지를 준비하지 못했어요. 다시 시도해주세요");
+        }
       } finally {
         if (isMounted) {
           setIsCapturing(false);
@@ -61,12 +64,17 @@ export default function RevealResult({
     setIsSharing(true);
     try {
       let targetPrepared = prepared;
-      if (!targetPrepared && cardRef.current) {
-        targetPrepared = await captureResult(
-          cardRef.current,
-          reveal.babyGender
-        );
-        setPrepared(targetPrepared);
+    if (!targetPrepared && cardRef.current) {
+        try {
+          targetPrepared = await captureResult(
+            cardRef.current,
+            reveal.babyGender
+          );
+          setPrepared(targetPrepared);
+        } catch {
+          setErrorMessage("이미지를 준비하지 못했어요. 다시 시도해주세요");
+          return;
+        }
       }
 
       if (targetPrepared) {
@@ -106,7 +114,11 @@ export default function RevealResult({
       {/* Result Card to capture */}
       <div
         ref={cardRef}
-        className="flex w-[min(420px,100%)] flex-col items-center rounded-3xl bg-white p-6 shadow-md border border-gray-100"
+        className="flex w-[min(420px,100%)] flex-col items-center rounded-3xl bg-white p-6"
+        style={{
+          border: "1px solid #f3f4f6",
+          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.10)",
+        }}
       >
         <p className="text-center text-lg font-bold text-[#232323]">
           {reveal.babyNickname}는
@@ -150,13 +162,15 @@ export default function RevealResult({
       {/* Action buttons outside card */}
       <div className="mt-6 flex w-[min(420px,100%)] flex-col items-center gap-3">
         {errorMessage && (
-          <p className="text-xs text-red-500">{errorMessage}</p>
+          <p className="text-xs text-red-500" role="alert">
+            {errorMessage}
+          </p>
         )}
 
         <button
           type="button"
           onClick={handleShareOrSave}
-          disabled={isSharing}
+          disabled={isCapturing || isSharing}
           className="h-[60px] w-full rounded-2xl bg-[#232323] text-sm font-semibold text-white transition hover:opacity-90 active:scale-[0.99] disabled:opacity-50"
         >
           {isCapturing

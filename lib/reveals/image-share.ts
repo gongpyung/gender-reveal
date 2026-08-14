@@ -10,16 +10,18 @@ export async function captureResult(
   element: HTMLElement,
   gender: Gender
 ): Promise<PreparedResult> {
-  const timeoutPromise = new Promise<never>((_, reject) =>
-    setTimeout(() => reject(new Error("Capture timed out")), 12000)
-  );
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(() => reject(new Error("Capture timed out")), 12000);
+  });
 
   const capturePromise = (async () => {
     // Ensure all images are loaded
     const images = Array.from(element.querySelectorAll("img"));
     await Promise.all(
       images.map((img) => {
-        if (img.complete) return Promise.resolve();
+        if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+        if (img.complete && img.naturalWidth === 0) return Promise.resolve();
         return new Promise((resolve) => {
           img.onload = resolve;
           img.onerror = resolve;
@@ -44,15 +46,20 @@ export async function captureResult(
     return { dataUrl, file };
   })();
 
-  return Promise.race([capturePromise, timeoutPromise]);
+  try {
+    return await Promise.race([capturePromise, timeoutPromise]);
+  } finally {
+    if (timeoutId !== undefined) clearTimeout(timeoutId);
+  }
 }
 
 export async function shareOrDownloadResult(
   prepared: PreparedResult
 ): Promise<void> {
-  const timeoutPromise = new Promise<never>((_, reject) =>
-    setTimeout(() => reject(new Error("Share timed out")), 15000)
-  );
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(() => reject(new Error("Share timed out")), 15000);
+  });
 
   const actionPromise = (async () => {
     if (
@@ -84,5 +91,9 @@ export async function shareOrDownloadResult(
     document.body.removeChild(link);
   })();
 
-  return Promise.race([actionPromise, timeoutPromise]);
+  try {
+    await Promise.race([actionPromise, timeoutPromise]);
+  } finally {
+    if (timeoutId !== undefined) clearTimeout(timeoutId);
+  }
 }

@@ -1,6 +1,38 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Gender Reveal E2E Journey", () => {
+  test("downloads the result image without application console errors", async ({
+    page,
+  }) => {
+    const consoleErrors: string[] = [];
+    page.on("console", (message) => {
+      if (message.type() === "error") consoleErrors.push(message.text());
+    });
+
+    await page.goto("/gender-reveal");
+    await page.getByLabel(/아기 별명/i).fill("깡총이");
+    await page.getByLabel(/출산 예정일/i).fill("2026-12-25");
+    await page.getByLabel(/받는 사람/i).fill("할머니, 할아버지");
+    await page.locator("label[for='gender-son']").click();
+    await page.locator("button[type='submit']").click();
+    await expect(page.getByText("풍선이 완성되었어요!")).toBeVisible();
+
+    const shareLink = await page.locator("input[readonly]").inputValue();
+    await page.goto(shareLink);
+    const touchButton = page.getByRole("button", { name: /풍선 터치하기/i });
+    for (let i = 0; i < 10; i++) await touchButton.click();
+
+    await expect(page.getByText("'아들'이에요!")).toBeVisible({ timeout: 5000 });
+    const saveButton = page.getByRole("button", { name: "결과 저장하기" });
+    await expect(saveButton).toBeEnabled({ timeout: 15000 });
+    const downloadPromise = page.waitForEvent("download");
+    await saveButton.click();
+    const download = await downloadPromise;
+
+    expect(download.suggestedFilename()).toBe("gender-reveal-son.png");
+    expect(consoleErrors).toEqual([]);
+  });
+
   test("creates a daughter reveal and completes 10-tap balloon interaction", async ({
     page,
   }) => {
