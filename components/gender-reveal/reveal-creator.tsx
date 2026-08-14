@@ -141,6 +141,8 @@ export default function RevealCreator() {
                   clearInvalid("dueDate");
                 }}
                 className={`h-12 w-full rounded-[4px] bg-[#f2f2f2] px-4 text-sm text-[#232323] outline-none transition ${
+                  !dueDate ? "date-input-empty" : ""
+                } ${
                   invalidFields.dueDate ? "ring-2 ring-red-400" : ""
                 }`}
               />

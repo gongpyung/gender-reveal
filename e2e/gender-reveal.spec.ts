@@ -1,6 +1,18 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Gender Reveal E2E Journey", () => {
+  test.beforeEach(async ({ page }) => {
+    const uncaughtErrors: string[] = [];
+    page.on("pageerror", (error) => uncaughtErrors.push(error.message));
+    page.on("console", (message) => {
+      if (message.type() === "error") uncaughtErrors.push(message.text());
+    });
+    await page.addInitScript((errors) => {
+      window.addEventListener("unload", () => {
+        if (errors.length) console.error(errors.join(" | "));
+      });
+    }, uncaughtErrors);
+  });
   test("downloads the result image without application console errors", async ({
     page,
   }) => {

@@ -47,6 +47,10 @@ label:has(input:focus-visible) {
   outline-offset: 3px;
 }
 
+.date-input-empty::-webkit-datetime-edit {
+  color: transparent;
+}
+
 @keyframes float {
   0%, 100% {
     transform: translateY(0) scale(var(--balloon-scale, 1));
