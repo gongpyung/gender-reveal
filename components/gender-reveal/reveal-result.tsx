@@ -100,25 +100,10 @@ export default function RevealResult({
 
   return (
     <div className="flex w-full flex-col items-center">
-      {/* Top back button */}
-      <div className="w-[min(420px,100%)] flex justify-start pb-2">
-        <button
-          type="button"
-          onClick={onReplay}
-          className="text-xs font-semibold text-[#9f9f9f] hover:text-[#232323]"
-        >
-          ‹ 뒤로가기
-        </button>
-      </div>
-
       {/* Result Card to capture */}
       <div
         ref={cardRef}
-        className="flex w-[min(420px,100%)] flex-col items-center rounded-3xl bg-white p-6"
-        style={{
-          border: "1px solid #f3f4f6",
-          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.10)",
-        }}
+        className="flex w-[min(420px,100%)] flex-col items-center bg-white p-6"
       >
         <p className="text-center text-lg font-bold text-[#232323]">
           {reveal.babyNickname}는
@@ -135,7 +120,7 @@ export default function RevealResult({
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={bubbleImgSrc}
-            alt="말풍선"
+            alt=""
             className="absolute h-[70px] w-[70px] -top-2 object-contain"
             onError={(e) => (e.currentTarget.style.display = "none")}
           />
@@ -143,7 +128,7 @@ export default function RevealResult({
           <img
             src={babyImgSrc}
             alt={isSon ? "아들" : "딸"}
-            className="h-[180px] w-auto object-contain"
+            className={`w-auto object-contain ${isSon ? "h-[168px]" : "h-[200px]"}`}
             onError={(e) => {
               const target = e.currentTarget;
               target.style.display = "none";
@@ -160,9 +145,9 @@ export default function RevealResult({
       </div>
 
       {/* Action buttons outside card */}
-      <div className="mt-6 flex w-[min(420px,100%)] flex-col items-center gap-3">
+      <div className="mt-6 flex w-[min(420px,100%)] flex-row items-center gap-[10px]">
         {errorMessage && (
-          <p className="text-xs text-red-500" role="alert">
+          <p className="absolute mt-[90px] text-xs text-red-500" role="alert">
             {errorMessage}
           </p>
         )}
@@ -171,7 +156,7 @@ export default function RevealResult({
           type="button"
           onClick={handleShareOrSave}
           disabled={isCapturing || isSharing}
-          className="h-[60px] w-full rounded-2xl bg-[#232323] text-sm font-semibold text-white transition hover:opacity-90 active:scale-[0.99] disabled:opacity-50"
+          className="h-[60px] min-w-0 flex-1 rounded-2xl bg-[#232323] text-sm font-semibold text-white transition hover:opacity-90 active:scale-[0.99] disabled:opacity-50"
         >
           {isCapturing
             ? "이미지 준비 중..."
@@ -182,8 +167,16 @@ export default function RevealResult({
 
         <button
           type="button"
+          onClick={onReplay}
+          className="h-[60px] min-w-0 flex-1 rounded-2xl border border-[#232323] bg-white text-sm font-semibold text-[#232323]"
+        >
+          ‹ 뒤로가기
+        </button>
+
+        <button
+          type="button"
           onClick={onCreateNew}
-          className="text-xs font-semibold text-[#9f9f9f] underline hover:text-[#232323]"
+          className="absolute mt-[150px] text-xs font-semibold text-[#9f9f9f] underline hover:text-[#232323]"
         >
           젠더리빌 새로 만들기
         </button>

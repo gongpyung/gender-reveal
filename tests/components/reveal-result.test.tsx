@@ -83,6 +83,25 @@ describe("RevealResult", () => {
     expect(img).toHaveAttribute("src", "/img/step3/baby-daughter.png");
   });
 
+  it("uses accessible artwork and a two-action result row", () => {
+    render(
+      <RevealResult
+        reveal={sonReveal}
+        onReplay={onReplay}
+        onCreateNew={onCreateNew}
+      />
+    );
+
+    expect(screen.getByRole("presentation")).toHaveAttribute(
+      "src",
+      "/img/step3/bubble-son.png"
+    );
+    expect(screen.getByAltText("아들").className).toContain("h-[168px]");
+    const actions = screen.getByRole("button", { name: "결과 저장하기" }).parentElement;
+    expect(actions).toHaveClass("flex-row");
+    expect(screen.getByRole("button", { name: "‹ 뒤로가기" })).toBeInTheDocument();
+  });
+
   it("calls onReplay when clicking replay button and onCreateNew when clicking new link", () => {
     render(
       <RevealResult
