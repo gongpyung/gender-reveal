@@ -1,0 +1,74 @@
+{
+  "id": "6d1fe504-6719-4918-ab83-209655a285bd",
+  "prevId": "25c65b5c-7ad9-4760-9cd1-1636e40fc932",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.reveals": {
+      "name": "reveals",
+      "schema": "",
+      "columns": {
+        "token": {
+          "name": "token",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "baby_nickname": {
+          "name": "baby_nickname",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "due_date": {
+          "name": "due_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "recipient_name": {
+          "name": "recipient_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "baby_gender": {
+          "name": "baby_gender",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "baby_gender_check": {
+          "name": "baby_gender_check",
+          "value": "\"reveals\".\"baby_gender\" IN ('son', 'daughter')"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

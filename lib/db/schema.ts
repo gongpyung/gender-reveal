@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, check } from "drizzle-orm/pg-core";
+import { date, pgTable, text, timestamp, check } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
 export const reveals = pgTable(
@@ -6,7 +6,7 @@ export const reveals = pgTable(
   {
     token: text("token").primaryKey(),
     babyNickname: text("baby_nickname").notNull(),
-    dueDate: text("due_date").notNull(),
+    dueDate: date("due_date", { mode: "string" }).notNull(),
     recipientName: text("recipient_name").notNull(),
     babyGender: text("baby_gender").notNull(),
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),

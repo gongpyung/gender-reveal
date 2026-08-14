@@ -1,4 +1,4 @@
-import { expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { reveals } from "@/lib/db/schema";
 import { getTableColumns } from "drizzle-orm";
 
@@ -10,4 +10,13 @@ it("exports reveals table with required columns", () => {
   expect(columns).toHaveProperty("recipientName");
   expect(columns).toHaveProperty("babyGender");
   expect(columns).toHaveProperty("createdAt");
+});
+
+describe("reveals due date column", () => {
+  it("stores due dates as non-null PostgreSQL dates in string mode", () => {
+    const dueDate = getTableColumns(reveals).dueDate;
+
+    expect(dueDate.columnType).toBe("PgDateString");
+    expect(dueDate.notNull).toBe(true);
+  });
 });
