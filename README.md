@@ -90,6 +90,7 @@ git diff --check
    ```
 
 5. **Smoke Test Production:**
+   - Public production URL: [https://kongkong-gender-reveal.vercel.app/gender-reveal](https://kongkong-gender-reveal.vercel.app/gender-reveal)
    - Confirm the public origin responds anonymously with HTTP 200.
    - Create a reveal link and open it in another browser context or device.
    - Tap 10 times, save the result image, replay, and refresh.

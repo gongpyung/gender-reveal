@@ -1,42 +1,82 @@
 # Gender Reveal Verification Record
 
-이 문서는 현재 실행에서 실제로 보관된 검증 증거만 기록합니다.
+현재 실행에서 확인한 로컬·Production 검증 증거를 기록합니다. 스크린샷은 저장소의 로컬 증거 디렉터리에 생성되며, 캡처 시점의 실행 결과만 이 문서에 반영합니다.
 
 ## Run metadata
 
-- Commit SHA: `64cdaa1b232661c945b286165eee4a6885f2cd05`
-- Captured at: `2026-08-14 09:47:48 Asia/Seoul`
+- Application deployment commit: `8af7848` (`docs: record production migration verification`)
+- Captured at: `2026-08-14 12:28 KST`
 - Playwright/Chromium: Playwright 1.62.1 / bundled Chromium
 - Viewports: 1280×720 and 390×844
-- Candidate production URL: `https://gender-reveal-kcckbd9z8-gongpyungs-projects.vercel.app/gender-reveal`
-- Public production URL: not verified; candidate redirects anonymous requests to Vercel SSO (HTTP 302)
+- Canonical public production URL: [https://kongkong-gender-reveal.vercel.app/gender-reveal](https://kongkong-gender-reveal.vercel.app/gender-reveal)
+- Deployment URL: [https://gender-reveal-qz2n7w3x2-gongpyungs-projects.vercel.app](https://gender-reveal-qz2n7w3x2-gongpyungs-projects.vercel.app)
+- Vercel deployment: `dpl_HA7oaeh43XZnejCXrxdPah5YHJ5f`, target `production`, status `Ready`
 
-## Evidence matrix
+## Production access and database
 
-| Viewport | State | Evidence path | Result |
-| --- | --- | --- | --- |
-| 1280×720 | Empty creator | `e2e/screenshots/local/desktop-creator-empty.png` | passed |
-| 390×844 | Empty creator | `e2e/screenshots/local/mobile-creator-empty.png` | passed |
-| 1280×720 | Invalid creator | `e2e/screenshots/local/desktop-creator-validation.png` | passed |
-| 390×844 | Invalid creator | `e2e/screenshots/local/mobile-creator-validation.png` | passed |
-| 1280×720 | Son selected | pending | unchecked |
-| 390×844 | Daughter selected | pending | unchecked |
-| 1280×720 | Share dialog | pending | unchecked |
-| 390×844 | Copy toast | pending | unchecked |
-| 1280×720 | Balloon 0/10 | pending | unchecked |
-| 390×844 | Balloon 9/10 | pending | unchecked |
-| 1280×720 | Burst transition | pending | unchecked |
-| 390×844 | Son result | pending | unchecked |
-| 1280×720 | Daughter result | pending | unchecked |
-| 390×844 | Unknown-link state | pending | unchecked |
-| 1280×720 | Operational-error state | pending | unchecked |
+- Anonymous `HEAD` checks returned HTTP 200 for the deployment URL and all three production aliases, including the canonical URL. No Vercel SSO redirect remained.
+- The created share links use the same public origin as the browser session that creates them.
+- Read-only migration preflight at `2026-08-14 10:19 KST` returned 0 invalid `due_date` rows.
+- Migration `0001_due_date_as_date.sql` applied at `2026-08-14 10:20 KST`.
+- Read-only postflight confirmed PostgreSQL `date`, 17 retained records, 0 NULL dates, and 2 migration-ledger entries.
+- Production `DATABASE_URL` was updated only in the linked `gender-reveal` Vercel project. Secret values are intentionally not recorded here.
 
-## Blockers and variance
+## Functional production evidence
 
-- Production migration preflight: 0 invalid rows at `2026-08-14 10:19 KST`; no user data was deleted or coerced.
-- Migration `0001_due_date_as_date.sql`: applied successfully at `2026-08-14 10:20 KST`; postflight confirmed PostgreSQL `date`, 17 records retained, 0 NULL dates, and 2 migration ledger entries.
-- Vercel production environment pull returned redacted `[SENSITIVE]` placeholders for database URL values, so the deployed runtime database configuration is not independently verified.
-- The candidate production URL is protected by Vercel SSO. Deployment protection must be deliberately changed for the intended public production domain before anonymous verification.
-- The full E2E journey, result download, database lookup, and remaining visual states are unchecked because no `DATABASE_URL` was available during this run.
-- Full production-server E2E result: 4 scenarios passed (validation and visual creator states); 8 scenarios failed at the expected fail-fast database boundary with `DatabaseConfigurationError: DATABASE_URL is required`.
-- Independent review completed. The timer-cleanup finding was fixed in commit `64cdaa1`; the remaining Important findings are external database/Vercel access and the resulting unchecked production journey/evidence matrix.
+Command:
+
+```bash
+PLAYWRIGHT_TEST_BASE_URL=https://gender-reveal-qz2n7w3x2-gongpyungs-projects.vercel.app npm run test:e2e -- --workers=1
+```
+
+Result: 19 passed, 1 skipped across desktop and mobile projects in the latest full functional run. The skipped desktop case is the mobile-only touchscreen scenario.
+
+Verified scenarios:
+
+- creator validation and unknown-token state;
+- son and daughter creation and result rendering;
+- mouse balloon interaction and ten-press burst;
+- mobile touchscreen balloon interaction;
+- refresh reset to `0 / 10`;
+- result PNG download with `gender-reveal-son.png` and no application console errors;
+- clipboard success and clipboard failure recovery;
+- replay to `0 / 10` and new-event navigation;
+- server `500` creation failure with entered values preserved.
+
+## Visual evidence matrix
+
+The complete matrix has 13 states × 2 viewports. The 26 current-run files are under `e2e/screenshots/local/`:
+
+| State | Desktop | Mobile |
+| --- | --- | --- |
+| Empty creator | `desktop-creator-empty.png` | `mobile-creator-empty.png` |
+| Invalid creator | `desktop-creator-invalid.png` | `mobile-creator-invalid.png` |
+| Son selected | `desktop-creator-son-selected.png` | `mobile-creator-son-selected.png` |
+| Daughter selected | `desktop-creator-daughter-selected.png` | `mobile-creator-daughter-selected.png` |
+| Share dialog | `desktop-share-dialog.png` | `mobile-share-dialog.png` |
+| Copy toast | `desktop-copy-toast.png` | `mobile-copy-toast.png` |
+| Balloon 0/10 | `desktop-balloon-0.png` | `mobile-balloon-0.png` |
+| Balloon 9/10 | `desktop-balloon-9.png` | `mobile-balloon-9.png` |
+| Burst transition | `desktop-burst.png` | `mobile-burst.png` |
+| Son result | `desktop-result-son.png` | `mobile-result-son.png` |
+| Daughter result | `desktop-result-daughter.png` | `mobile-result-daughter.png` |
+| Unknown link | `desktop-unknown-link.png` | `mobile-unknown-link.png` |
+| Operational error | `desktop-operational-error.png` | `mobile-operational-error.png` |
+
+The operational-error pair was captured against an isolated Next.js server configured with an unavailable database. It verifies the dedicated `링크를 불러오지 못했어요` boundary without touching the Production database.
+
+## Local verification gate
+
+The latest local gate before the production run passed:
+
+- `npm ci`
+- `npm test`: 47 passed, 1 skipped (integration test skipped without `TEST_DATABASE_URL`)
+- `npm run test:e2e:prepare`
+- `npm run typecheck`
+- `npm run lint` (2 existing raw-image warnings)
+- `npm run build`
+- `npx drizzle-kit check`
+- `git diff --check`
+- `node scripts/check-standalone-language.mjs`
+
+The screenshot files are generated evidence and remain ignored by Git. They were inspected during this run at desktop and mobile sizes.
