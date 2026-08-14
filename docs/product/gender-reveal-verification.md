@@ -5,7 +5,8 @@
 ## Run metadata
 
 - Application deployment commit: `8af7848` (`docs: record production migration verification`)
-- Captured at: `2026-08-14 12:28 KST`
+- Evidence test commit: `bc4fc8a` (`test: complete production acceptance evidence`)
+- Captured at: `2026-08-14 12:32 KST`
 - Playwright/Chromium: Playwright 1.62.1 / bundled Chromium
 - Viewports: 1280×720 and 390×844
 - Canonical public production URL: [https://kongkong-gender-reveal.vercel.app/gender-reveal](https://kongkong-gender-reveal.vercel.app/gender-reveal)
@@ -26,10 +27,10 @@
 Command:
 
 ```bash
-PLAYWRIGHT_TEST_BASE_URL=https://gender-reveal-qz2n7w3x2-gongpyungs-projects.vercel.app npm run test:e2e -- --workers=1
+PLAYWRIGHT_TEST_BASE_URL=https://kongkong-gender-reveal.vercel.app npm run test:e2e -- --workers=1
 ```
 
-Result: 19 passed, 1 skipped across desktop and mobile projects in the latest full functional run. The skipped desktop case is the mobile-only touchscreen scenario.
+Result: 23 passed, 3 skipped across desktop and mobile projects in the latest full Production run. The skipped cases are the desktop-only exclusion for touchscreen coverage and the two operational-error visual cases, which were run separately against the isolated unavailable-database server.
 
 Verified scenarios:
 
