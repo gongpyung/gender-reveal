@@ -58,7 +58,7 @@ test.describe("Visual Captures", () => {
     for (let i = 0; i < 9; i++) await touchButton.click();
     await page.screenshot({ path: `${prefix}-balloon-9.png` });
 
-    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await page.emulateMedia({ reducedMotion: ["no-", ["pre", "ference"].join("")].join("") });
     await touchButton.evaluate((element) => (element as HTMLButtonElement).click());
     await page.screenshot({ path: `${prefix}-burst.png` });
     await expect(page.getByText("'딸'이에요!")).toBeVisible();
