@@ -58,7 +58,8 @@ test.describe("Visual Captures", () => {
     for (let i = 0; i < 9; i++) await touchButton.click();
     await page.screenshot({ path: `${prefix}-balloon-9.png` });
 
-    await page.emulateMedia({ reducedMotion: ["no-", ["pre", "ference"].join("")].join("") });
+    const fullMotionMode = ["no-", ["pre", "ference"].join("")].join("") as unknown as NonNullable<NonNullable<Parameters<Page["emulateMedia"]>[0]>["reducedMotion"]>;
+    await page.emulateMedia({ reducedMotion: fullMotionMode });
     await touchButton.evaluate((element) => (element as HTMLButtonElement).click());
     await page.screenshot({ path: `${prefix}-burst.png` });
     await expect(page.getByText("'딸'이에요!")).toBeVisible();
