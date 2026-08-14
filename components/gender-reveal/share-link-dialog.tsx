@@ -88,22 +88,22 @@ export default function ShareLinkDialog({
         role="dialog"
         aria-modal="true"
         aria-label="풍선이 완성되었어요"
-        className="relative flex w-[min(350px,100%)] flex-col items-center rounded-2xl bg-white p-6 shadow-xl"
+        className="relative flex w-[min(350px,100%)] flex-col items-center rounded-[10px] px-5 pb-5 pt-[49px] shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           type="button"
           aria-label="닫기"
           onClick={closeDialog}
-          className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100"
+          className="absolute top-[29px] right-5 flex h-8 w-8 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100"
         >
           <span aria-hidden="true">×</span>
         </button>
 
-        <h2 className="mt-2 text-xl font-bold text-[#232323]">
+        <h2 className="text-xl font-bold text-[#232323]">
           풍선이 완성되었어요!
         </h2>
-        <p className="mt-1 flex flex-col text-center text-sm text-[#9f9f9f]">
+        <p className="mt-[30px] flex flex-col text-center text-sm text-[#9f9f9f]">
           <span>링크를 복사하여 카카오톡이나</span>
           <span>문자로 공유해보세요.</span>
         </p>
@@ -120,7 +120,7 @@ export default function ShareLinkDialog({
           <button
             type="button"
             onClick={handleCopy}
-            className="w-full rounded-xl bg-[#232323] py-3 text-sm font-semibold text-white transition hover:opacity-90 active:scale-[0.99]"
+            className="h-[61px] w-full rounded-xl bg-[#232323] text-sm font-semibold text-white transition hover:opacity-90 active:scale-[0.99]"
           >
             공유 링크 복사
           </button>

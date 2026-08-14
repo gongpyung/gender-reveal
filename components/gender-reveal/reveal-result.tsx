@@ -105,13 +105,13 @@ export default function RevealResult({
         ref={cardRef}
         className="flex w-[min(420px,100%)] flex-col items-center bg-white p-6"
       >
-        <p className="text-center text-lg font-bold text-[#232323]">
+        <p className="text-center text-[22px] font-bold text-[#232323]">
           {reveal.babyNickname}는
         </p>
-        <p className="text-center text-sm font-semibold text-[#9f9f9f]">
+        <p className="text-center text-[14px] font-semibold text-[#9f9f9f]">
           귀엽고 사랑스러운
         </p>
-        <h1 className={`mt-1 text-center text-3xl font-extrabold ${genderColor}`}>
+        <h1 className={`mt-1 text-center text-[29px] font-extrabold ${genderColor}`}>
           {genderLabel}
         </h1>
 
@@ -121,14 +121,14 @@ export default function RevealResult({
           <img
             src={bubbleImgSrc}
             alt=""
-            className="absolute h-[70px] w-[70px] -top-2 object-contain"
+            className="absolute -top-2 h-[min(70px,18vw)] w-[min(70px,18vw)] object-contain"
             onError={(e) => (e.currentTarget.style.display = "none")}
           />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={babyImgSrc}
             alt={isSon ? "아들" : "딸"}
-            className={`w-auto object-contain ${isSon ? "h-[168px]" : "h-[200px]"}`}
+            className={`w-auto object-contain ${isSon ? "h-[min(168px,43vw)]" : "h-[min(200px,51vw)]"}`}
             onError={(e) => {
               const target = e.currentTarget;
               target.style.display = "none";
@@ -137,10 +137,10 @@ export default function RevealResult({
         </div>
 
         {/* Closing info */}
-        <div className="flex flex-col items-center gap-1 text-center text-xs text-[#232323]">
-          <p className="font-bold">{reveal.recipientName}!</p>
-          <p className="font-medium">{formattedDate}에</p>
-          <p className="font-bold">건강하게 만나요 :)</p>
+        <div className="flex flex-col items-center text-center leading-[30px] text-[#232323]">
+          <p className="text-[18px] font-bold">{reveal.recipientName}!</p>
+          <p className="text-[24px] font-medium">{formattedDate}에</p>
+          <p className="text-[18px] font-bold">건강하게 만나요 :)</p>
         </div>
       </div>
 

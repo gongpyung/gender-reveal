@@ -62,6 +62,12 @@ describe("RevealResult", () => {
     expect(screen.getByText("2026년 12월 25일에")).toBeInTheDocument();
     expect(screen.getByText("건강하게 만나요 :)")).toBeInTheDocument();
 
+    expect(screen.getByText("깡총이는")).toHaveClass("text-[22px]");
+    expect(screen.getByText("'아들'이에요!")).toHaveClass("text-[29px]");
+    expect(screen.getByAltText("아들")).toHaveClass("h-[min(168px,43vw)]");
+    expect(screen.getByText("할머니, 할아버지!")).toHaveClass("text-[18px]");
+    expect(screen.getByText("2026년 12월 25일에")).toHaveClass("text-[24px]");
+
     const img = screen.getByAltText("아들");
     expect(img).toHaveAttribute("src", "/img/step3/baby-son.png");
   });
@@ -96,7 +102,7 @@ describe("RevealResult", () => {
       "src",
       "/img/step3/bubble-son.png"
     );
-    expect(screen.getByAltText("아들").className).toContain("h-[168px]");
+    expect(screen.getByAltText("아들").className).toContain("h-[min(168px,43vw)]");
     const actions = screen.getByRole("button", { name: "결과 저장하기" }).parentElement;
     expect(actions).toHaveClass("flex-row");
     expect(screen.getByRole("button", { name: "‹ 뒤로가기" })).toBeInTheDocument();

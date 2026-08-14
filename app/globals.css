@@ -75,11 +75,11 @@ label:has(input:focus-visible) {
     opacity: 1;
   }
   60% {
-    transform: scale(1.6);
+    transform: scale(var(--balloon-scale, 1)) scale(1.6);
     opacity: 0.8;
   }
   100% {
-    transform: scale(2.2);
+    transform: scale(var(--balloon-scale, 1)) scale(2.2);
     opacity: 0;
   }
 }
@@ -137,6 +137,12 @@ label:has(input:focus-visible) {
   .animate-burst,
   .animate-fade-in,
   .animate-heart-float {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+  .animate-tap-pop,
+  .animate-heart-burst,
+  .animate-confetti-burst {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
   }
