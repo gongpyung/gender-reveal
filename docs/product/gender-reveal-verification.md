@@ -4,8 +4,8 @@
 
 ## Run metadata
 
-- Commit SHA: `701856c` (latest committed product state before the Task 8 evidence-only changes)
-- Captured at: `2026-08-14 18:34 Asia/Seoul`
+- Commit SHA: `8c767b40816205af300f020f3d167eae6270105d`
+- Captured at: `2026-08-14 09:40:28 Asia/Seoul`
 - Playwright/Chromium: Playwright 1.62.1 / bundled Chromium
 - Viewports: 1280×720 and 390×844
 - Production URL: not verified in this environment
