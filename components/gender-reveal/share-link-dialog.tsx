@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export type ShareLinkDialogProps = {
   shareLink: string;
@@ -12,15 +12,50 @@ export default function ShareLinkDialog({
   onClose,
 }: ShareLinkDialogProps) {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [toastKind, setToastKind] = useState<"status" | "alert">("status");
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const previousActiveElement = useRef<HTMLElement | null>(null);
+
+  const focusable = () =>
+    Array.from(
+      dialogRef.current?.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), input:not([disabled])'
+      ) ?? []
+    );
+  const restoreFocus = () => previousActiveElement.current?.focus();
+  const closeDialog = () => {
+    restoreFocus();
+    onClose();
+  };
 
   useEffect(() => {
+    previousActiveElement.current = document.activeElement as HTMLElement;
+    const closeButton = dialogRef.current?.querySelector<HTMLButtonElement>(
+      'button[aria-label="닫기"]'
+    );
+    closeButton?.focus();
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        onClose();
+        closeDialog();
+        return;
+      }
+      if (e.key === "Tab") {
+        const elements = focusable();
+        if (!elements.length) return;
+        e.preventDefault();
+        const currentIndex = elements.indexOf(document.activeElement as HTMLElement);
+        const nextIndex = e.shiftKey
+          ? (currentIndex - 1 + elements.length) % elements.length
+          : (currentIndex + 1) % elements.length;
+        elements[nextIndex].focus();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      previousActiveElement.current?.focus();
+    };
   }, [onClose]);
 
   useEffect(() => {
@@ -34,8 +69,10 @@ export default function ShareLinkDialog({
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(shareLink);
+      setToastKind("status");
       setToastMessage("복사가 완료 되었습니다.");
     } catch {
+      setToastKind("alert");
       setToastMessage("복사에 실패했어요. 링크를 직접 선택해 복사해주세요");
     }
   };
@@ -44,9 +81,10 @@ export default function ShareLinkDialog({
     <div
       data-testid="dialog-overlay"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-      onClick={onClose}
+      onClick={closeDialog}
     >
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-label="풍선이 완성되었어요"
@@ -56,31 +94,18 @@ export default function ShareLinkDialog({
         <button
           type="button"
           aria-label="닫기"
-          onClick={onClose}
+          onClick={closeDialog}
           className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100"
         >
-          {/* SVG close icon or fallback */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/img/step1/close-icon.svg"
-            alt="닫기"
-            className="h-4 w-4"
-            onError={(e) => {
-              // Fallback text if asset not downloaded yet
-              e.currentTarget.style.display = "none";
-              const parent = e.currentTarget.parentElement;
-              if (parent && !parent.textContent) parent.textContent = "✕";
-            }}
-          />
+          <span aria-hidden="true">×</span>
         </button>
 
         <h2 className="mt-2 text-xl font-bold text-[#232323]">
           풍선이 완성되었어요!
         </h2>
-        <p className="mt-1 text-center text-sm text-[#9f9f9f]">
-          아래 링크를 복사하여 전달해주시면
-          <br />
-          풍선을 10번 눌러 확인할 수 있어요.
+        <p className="mt-1 flex flex-col text-center text-sm text-[#9f9f9f]">
+          <span>링크를 복사하여 카카오톡이나</span>
+          <span>문자로 공유해보세요.</span>
         </p>
 
         <div className="mt-4 flex w-full flex-col gap-3">
@@ -97,12 +122,15 @@ export default function ShareLinkDialog({
             onClick={handleCopy}
             className="w-full rounded-xl bg-[#232323] py-3 text-sm font-semibold text-white transition hover:opacity-90 active:scale-[0.99]"
           >
-            링크 복사하기 ›
+            공유 링크 복사
           </button>
         </div>
 
         {toastMessage && (
-          <div className="mt-3 rounded-lg bg-[#232323]/90 px-4 py-2 text-center text-xs text-white shadow-md">
+          <div
+            role={toastKind}
+            className="fixed top-5 rounded-lg bg-[#232323] px-4 py-2 text-center text-xs text-white shadow-md"
+          >
             {toastMessage}
           </div>
         )}
