@@ -20,7 +20,9 @@ async function expectResultImagesSeparated(page: Page, gender: "son" | "daughter
   const heartBox = await page.getByRole("presentation").boundingBox();
   const babyBox = await page.getByAltText(gender === "son" ? "아들" : "딸").boundingBox();
   if (!heartBox || !babyBox) throw new Error("Result images have no layout boxes");
-  expect(heartBox.y + heartBox.height).toBeLessThanOrEqual(babyBox.y - 8);
+  const gap = babyBox.y - (heartBox.y + heartBox.height);
+  expect(gap).toBeGreaterThanOrEqual(8);
+  expect(gap).toBeLessThanOrEqual(16);
 }
 
 async function createShareLink(page: Page, gender: "son" | "daughter") {
@@ -124,6 +126,29 @@ test.describe("Visual Captures", () => {
     const form = page.locator("form");
     const formBox = await form.boundingBox();
     expect(formBox?.width).toBe(testInfo.project.name === "desktop" ? 380 : 318);
+  });
+
+  test("balances the date picker and supports direct month and year selection", async ({ page }) => {
+    await page.goto("/gender-reveal");
+    await page.getByRole("button", { name: "출산 예정일" }).click();
+
+    const calendarBox = await page.locator(".due-date-calendar").boundingBox();
+    const gridBox = await page.locator(".rdp-month_grid").boundingBox();
+    if (!calendarBox || !gridBox) throw new Error("Date picker has no layout boxes");
+
+    const leftInset = gridBox.x - calendarBox.x;
+    const rightInset =
+      calendarBox.x + calendarBox.width - (gridBox.x + gridBox.width);
+    expect(Math.abs(leftInset - rightInset)).toBeLessThanOrEqual(4);
+
+    const targetYear = new Date().getFullYear() + 1;
+    await page.getByRole("combobox", { name: "연도 선택" }).selectOption(
+      String(targetYear)
+    );
+    await page.getByRole("combobox", { name: "월 선택" }).selectOption("10");
+    await expect(
+      page.getByRole("grid", { name: `${targetYear}년 11월` })
+    ).toBeVisible();
   });
 
   test("captures the operational error state", async ({ page }, testInfo) => {

@@ -28,6 +28,10 @@ function formatDisplayValue(value: string) {
   return `${date.getFullYear()}. ${String(date.getMonth() + 1).padStart(2, "0")}. ${String(date.getDate()).padStart(2, "0")}`;
 }
 
+const currentYear = new Date().getFullYear();
+const calendarStart = new Date(currentYear - 1, 0);
+const calendarEnd = new Date(currentYear + 5, 11);
+
 const DueDatePicker = forwardRef<HTMLButtonElement, DueDatePickerProps>(
   function DueDatePicker(
     { id, value, onChange, invalid = false, describedBy },
@@ -59,11 +63,15 @@ const DueDatePicker = forwardRef<HTMLButtonElement, DueDatePickerProps>(
             align="start"
             sideOffset={8}
             collisionPadding={16}
-            className="z-50 w-[min(352px,calc(100vw-2rem))] rounded-xl border border-[#cae7ff] bg-white p-3 text-[#232323] shadow-[0_12px_32px_rgba(35,35,35,0.18)]"
+            className="z-50 w-[306px] max-w-[calc(100vw-2rem)] rounded-xl border border-[#cae7ff] bg-white p-3 text-[#232323] shadow-[0_12px_32px_rgba(35,35,35,0.18)]"
           >
             <DayPicker
               mode="single"
               locale={ko}
+              captionLayout="dropdown"
+              navLayout="after"
+              startMonth={calendarStart}
+              endMonth={calendarEnd}
               selected={selected}
               defaultMonth={selected}
               onSelect={(date) => {

@@ -21,6 +21,20 @@ const hearts = [
   ["pink", "left-[93%] top-[100%]", "w-[15%]", "0.75s"],
 ] as const;
 
+const hitVariants = [
+  { left: "36%", top: "4%", color: "#ff9999", fontSize: "14px", rotation: "-8deg" },
+  { left: "48%", top: "12%", color: "#509fdf", fontSize: "15px", rotation: "5deg" },
+  { left: "61%", top: "6%", color: "#232323", fontSize: "13px", rotation: "9deg" },
+  { left: "42%", top: "18%", color: "#509fdf", fontSize: "14px", rotation: "-4deg" },
+  { left: "66%", top: "14%", color: "#ff9999", fontSize: "15px", rotation: "7deg" },
+  { left: "53%", top: "2%", color: "#232323", fontSize: "13px", rotation: "-2deg" },
+] as const;
+
+type TapFeedback = {
+  id: number;
+  variantIndex: number;
+};
+
 export default function BalloonInteraction({
   reveal,
   touchCount,
@@ -28,9 +42,10 @@ export default function BalloonInteraction({
   onTouch,
   onComplete,
 }: BalloonInteractionProps) {
-  const [tapFeedbacks, setTapFeedbacks] = useState<number[]>([]);
+  const [tapFeedbacks, setTapFeedbacks] = useState<TapFeedback[]>([]);
   const [isShaking, setIsShaking] = useState(false);
   const previousCount = useRef(touchCount);
+  const nextFeedbackId = useRef(0);
   const feedbackTimers = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
 
   useEffect(() => {
@@ -60,7 +75,11 @@ export default function BalloonInteraction({
 
   const handleTap = () => {
     if (isBursting || touchCount >= 10) return;
-    setTapFeedbacks((prev) => [...prev, Date.now()]);
+    const id = nextFeedbackId.current++;
+    setTapFeedbacks((prev) => [
+      ...prev,
+      { id, variantIndex: id % hitVariants.length },
+    ]);
     const timer = setTimeout(() => {
       feedbackTimers.current.delete(timer);
       setTapFeedbacks((prev) => prev.slice(1));
@@ -92,15 +111,25 @@ export default function BalloonInteraction({
           />
         ))}
         <BalloonParticles visible={isBursting} />
-        {tapFeedbacks.map((id) => (
-          <span
-            key={id}
-            aria-hidden="true"
-            className="pointer-events-none absolute left-1/2 top-[4%] z-20 -translate-x-1/2 text-sm font-extrabold text-[#ff9999] animate-hit-feedback"
-          >
-            hit
-          </span>
-        ))}
+        {tapFeedbacks.map(({ id, variantIndex }) => {
+          const variant = hitVariants[variantIndex];
+          return (
+            <span
+              key={id}
+              aria-hidden="true"
+              className="pointer-events-none absolute left-1/2 top-[4%] z-20 -translate-x-1/2 text-sm font-extrabold animate-hit-feedback"
+              style={{
+                left: variant.left,
+                top: variant.top,
+                color: variant.color,
+                fontSize: variant.fontSize,
+                "--hit-rotation": variant.rotation,
+              } as React.CSSProperties}
+            >
+              hit
+            </span>
+          );
+        })}
         <button
           type="button"
           aria-label={`풍선 터치하기 (${touchCount}/10)`}

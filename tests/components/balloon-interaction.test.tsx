@@ -142,6 +142,25 @@ describe("BalloonInteraction", () => {
     expect(balloon.className).not.toContain("animate-balloon-shake");
   });
 
+  it("varies the position and color of consecutive hit feedback", () => {
+    render(
+      <TestWrapper onTouchSpy={vi.fn()} onCompleteSpy={vi.fn()} />
+    );
+    const balloon = screen.getByRole("button", {
+      name: "풍선 터치하기 (0/10)",
+    });
+
+    fireEvent.click(balloon);
+    fireEvent.click(balloon);
+    fireEvent.click(balloon);
+
+    const feedbacks = screen.getAllByText("hit");
+    expect(feedbacks).toHaveLength(3);
+    expect(new Set(feedbacks.map((feedback) => feedback.style.left)).size).toBe(3);
+    expect(new Set(feedbacks.map((feedback) => feedback.style.top)).size).toBe(3);
+    expect(new Set(feedbacks.map((feedback) => feedback.style.color)).size).toBeGreaterThan(1);
+  });
+
   it("cleans up tap feedback timers when unmounted", () => {
     const clearTimeoutSpy = vi.spyOn(globalThis, "clearTimeout");
     const { unmount } = render(

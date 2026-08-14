@@ -72,6 +72,24 @@ describe("DueDatePicker", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
+  it("changes the displayed calendar directly with month and year selectors", async () => {
+    const user = userEvent.setup();
+    render(<DueDatePicker id="dueDate" value="" onChange={vi.fn()} />);
+
+    await user.click(screen.getByRole("button", { name: "출산 예정일" }));
+
+    const targetYear = new Date().getFullYear() + 1;
+    const yearSelect = screen.getByRole("combobox", { name: "연도 선택" });
+    const monthSelect = screen.getByRole("combobox", { name: "월 선택" });
+
+    await user.selectOptions(yearSelect, String(targetYear));
+    await user.selectOptions(monthSelect, "10");
+
+    expect(
+      screen.getByRole("grid", { name: `${targetYear}년 11월` })
+    ).toBeInTheDocument();
+  });
+
   it("shows the exact display format for an existing value", () => {
     render(
       <DueDatePicker

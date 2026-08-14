@@ -56,6 +56,18 @@ label:has(input:focus-visible) {
   --rdp-day_button-height: 36px;
 }
 
+.due-date-calendar .rdp-dropdown_root {
+  min-height: 36px;
+  cursor: pointer;
+  border-radius: 8px;
+  background: #f2f2f2;
+  padding: 6px 8px;
+}
+
+.due-date-calendar .rdp-dropdown_root .rdp-chevron {
+  margin-left: 4px;
+}
+
 @keyframes float {
   0%, 100% {
     transform: translateY(0) scale(var(--balloon-scale, 1));
@@ -120,9 +132,9 @@ label:has(input:focus-visible) {
 }
 
 @keyframes hitFeedback {
-  0% { opacity: 0; transform: translate(-50%, 8px) scale(.85); }
+  0% { opacity: 0; transform: translate(-50%, 8px) rotate(var(--hit-rotation, 0deg)) scale(.85); }
   20% { opacity: 1; }
-  100% { opacity: 0; transform: translate(-50%, -12px) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -12px) rotate(var(--hit-rotation, 0deg)) scale(1); }
 }
 @keyframes heartBurst { from { opacity: 1; transform: translate(0, 0) scale(1); } to { opacity: 0; transform: translate(20px, -80px) scale(.6); } }
 @keyframes confettiBurst { from { opacity: 1; transform: translate(0, 0) rotate(0); } to { opacity: 0; transform: translate(-20px, 90px) rotate(180deg); } }

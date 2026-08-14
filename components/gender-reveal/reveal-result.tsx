@@ -116,7 +116,7 @@ export default function RevealResult({
         </h1>
 
         {/* Baby image area */}
-        <div className="my-6 flex w-full flex-col items-center gap-5">
+        <div className="my-6 flex w-full flex-col items-center gap-2">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={bubbleImgSrc}

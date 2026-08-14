@@ -22,7 +22,9 @@ async function expectResultImagesSeparated(page: Page, gender: "son" | "daughter
   const heartBox = await heart.boundingBox();
   const babyBox = await baby.boundingBox();
   if (!heartBox || !babyBox) throw new Error("Result images have no layout boxes");
-  expect(heartBox.y + heartBox.height).toBeLessThanOrEqual(babyBox.y - 8);
+  const gap = babyBox.y - (heartBox.y + heartBox.height);
+  expect(gap).toBeGreaterThanOrEqual(8);
+  expect(gap).toBeLessThanOrEqual(16);
 }
 
 async function createShareLink(
