@@ -4,14 +4,14 @@
 
 ## Run metadata
 
-- Application deployment commit: `e3fed2a` (`fix: wait for fonts before result capture`)
+- Application deployment commit: `6f1bddf` (`fix: align result and share fidelity`)
 - Evidence test commit: `03761cd` (`test: retain visual evidence and console checks`)
-- Captured at: `2026-08-14 12:48 KST`
+- Captured at: `2026-08-14 13:01 KST`
 - Playwright/Chromium: Playwright 1.62.1 / bundled Chromium
 - Viewports: 1280×720 and 390×844
 - Canonical public production URL: [https://kongkong-gender-reveal.vercel.app/gender-reveal](https://kongkong-gender-reveal.vercel.app/gender-reveal)
-- Deployment URL: [https://gender-reveal-opr91wj0k-gongpyungs-projects.vercel.app](https://gender-reveal-opr91wj0k-gongpyungs-projects.vercel.app)
-- Vercel deployment: `dpl_EHP6ay8qjzbpbnEFoG8Rm5KZVd6Q`, target `production`, status `Ready`
+- Deployment URL: [https://gender-reveal-crjzcdktv-gongpyungs-projects.vercel.app](https://gender-reveal-crjzcdktv-gongpyungs-projects.vercel.app)
+- Vercel deployment: `dpl_GL2Rrd5zKxdCwEZ95MB3WvyZWGcE`, target `production`, status `Ready`
 
 ## Production access and database
 
@@ -27,7 +27,7 @@
 Command:
 
 ```bash
-PLAYWRIGHT_TEST_BASE_URL=https://gender-reveal-opr91wj0k-gongpyungs-projects.vercel.app npm run test:e2e -- --workers=1
+PLAYWRIGHT_TEST_BASE_URL=https://gender-reveal-crjzcdktv-gongpyungs-projects.vercel.app npm run test:e2e -- --workers=1
 ```
 
 Result: 23 passed, 3 skipped across desktop and mobile projects in the latest full Production run. The skipped cases are the desktop-only exclusion for touchscreen coverage and the two operational-error visual cases, which were run separately against the isolated unavailable-database server.
