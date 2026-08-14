@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { Gender } from "@/lib/reveals/types";
 import { revealInputSchema } from "@/lib/reveals/validation";
+import DueDatePicker from "./due-date-picker";
 import ShareLinkDialog from "./share-link-dialog";
 
 export default function RevealCreator() {
@@ -15,7 +16,7 @@ export default function RevealCreator() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [createdShareLink, setCreatedShareLink] = useState<string | null>(null);
-  const fieldRefs = useRef<Record<string, HTMLInputElement | null>>({});
+  const fieldRefs = useRef<Record<string, HTMLElement | null>>({});
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,7 +103,7 @@ export default function RevealCreator() {
             <input
               id="babyNickname"
               type="text"
-              placeholder="예시: 깡총이"
+              placeholder="예시: 콩콩이"
               value={babyNickname}
               ref={(element) => {
                 fieldRefs.current.babyNickname = element;
@@ -126,32 +127,19 @@ export default function RevealCreator() {
             >
               출산 예정일
             </label>
-            <div className="relative">
-              <input
-                id="dueDate"
-                type="date"
-                value={dueDate}
-                ref={(element) => {
-                  fieldRefs.current.dueDate = element;
-                }}
-                aria-invalid={Boolean(invalidFields.dueDate)}
-                aria-describedby={invalidFields.dueDate ? "form-error" : undefined}
-                onChange={(e) => {
-                  setDueDate(e.target.value);
-                  clearInvalid("dueDate");
-                }}
-                className={`h-12 w-full rounded-[4px] bg-[#f2f2f2] px-4 text-sm text-[#232323] outline-none transition ${
-                  !dueDate ? "date-input-empty" : ""
-                } ${
-                  invalidFields.dueDate ? "ring-2 ring-red-400" : ""
-                }`}
-              />
-              {!dueDate && (
-                <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-sm text-[#9f9f9f]">
-                  연.월.일
-                </span>
-              )}
-            </div>
+            <DueDatePicker
+              id="dueDate"
+              value={dueDate}
+              ref={(element) => {
+                fieldRefs.current.dueDate = element;
+              }}
+              invalid={Boolean(invalidFields.dueDate)}
+              describedBy={invalidFields.dueDate ? "form-error" : undefined}
+              onChange={(value) => {
+                setDueDate(value);
+                clearInvalid("dueDate");
+              }}
+            />
           </div>
 
           <div className="flex flex-col gap-1.5">
@@ -182,10 +170,10 @@ export default function RevealCreator() {
           </div>
 
           <fieldset
-            className="flex flex-col gap-3"
+            className="flex flex-col"
             aria-describedby={invalidFields.babyGender ? "form-error" : undefined}
           >
-            <legend className="text-xs font-semibold text-[#232323]">아기 성별</legend>
+            <legend className="mb-3 text-xs font-semibold text-[#232323]">아기 성별</legend>
             <div className="grid grid-cols-2 gap-3">
               <input
                 id="gender-son"
@@ -208,7 +196,7 @@ export default function RevealCreator() {
                 htmlFor="gender-son"
                 className={`flex h-[50px] cursor-pointer items-center justify-center rounded-xl border text-sm font-semibold transition ${
                   babyGender === "son"
-                    ? "border-[#232323] bg-[#cae7ff] text-[#232323] ring-2 ring-[#232323] translate-x-1 -translate-y-1"
+                    ? "border-[#232323] bg-[#cae7ff] text-[#232323] ring-2 ring-[#232323]"
                     : "border-[#cae7ff] bg-[#cae7ff] text-[#232323]"
                 } ${invalidFields.babyGender ? "ring-2 ring-red-400" : ""}`}
               >
@@ -233,7 +221,7 @@ export default function RevealCreator() {
                 htmlFor="gender-daughter"
                 className={`flex h-[50px] cursor-pointer items-center justify-center rounded-xl border text-sm font-semibold transition ${
                   babyGender === "daughter"
-                    ? "border-[#232323] bg-[#ffd2d2] text-[#232323] ring-2 ring-[#232323] translate-x-1 -translate-y-1"
+                    ? "border-[#232323] bg-[#ffd2d2] text-[#232323] ring-2 ring-[#232323]"
                     : "border-[#ffd2d2] bg-[#ffd2d2] text-[#232323]"
                 } ${invalidFields.babyGender ? "ring-2 ring-red-400" : ""}`}
               >

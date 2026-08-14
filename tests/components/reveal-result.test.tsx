@@ -17,7 +17,7 @@ vi.mock("@/lib/reveals/image-share", async () => {
 
 const sonReveal: RevealRecord = {
   token: "son-token-123",
-  babyNickname: "깡총이",
+  babyNickname: "콩콩이",
   dueDate: "2026-12-25",
   recipientName: "할머니, 할아버지",
   babyGender: "son",
@@ -26,7 +26,7 @@ const sonReveal: RevealRecord = {
 
 const daughterReveal: RevealRecord = {
   token: "daughter-token-123",
-  babyNickname: "깡총이",
+  babyNickname: "콩콩이",
   dueDate: "2026-12-25",
   recipientName: "할머니, 할아버지",
   babyGender: "daughter",
@@ -55,14 +55,14 @@ describe("RevealResult", () => {
       />
     );
 
-    expect(screen.getByText("깡총이는")).toBeInTheDocument();
+    expect(screen.getByText("콩콩이는")).toBeInTheDocument();
     expect(screen.getByText("귀엽고 사랑스러운")).toBeInTheDocument();
     expect(screen.getByText("'아들'이에요!")).toBeInTheDocument();
     expect(screen.getByText("할머니, 할아버지!")).toBeInTheDocument();
     expect(screen.getByText("2026년 12월 25일에")).toBeInTheDocument();
     expect(screen.getByText("건강하게 만나요 :)")).toBeInTheDocument();
 
-    expect(screen.getByText("깡총이는")).toHaveClass("text-[22px]");
+    expect(screen.getByText("콩콩이는")).toHaveClass("text-[22px]");
     expect(screen.getByText("'아들'이에요!")).toHaveClass("text-[29px]");
     expect(screen.getByAltText("아들")).toHaveClass("h-[min(168px,43vw)]");
     expect(screen.getByText("할머니, 할아버지!")).toHaveClass("text-[18px]");
@@ -81,7 +81,7 @@ describe("RevealResult", () => {
       />
     );
 
-    expect(screen.getByText("깡총이는")).toBeInTheDocument();
+    expect(screen.getByText("콩콩이는")).toBeInTheDocument();
     expect(screen.getByText("귀엽고 사랑스러운")).toBeInTheDocument();
     expect(screen.getByText("'딸'이에요!")).toBeInTheDocument();
 
@@ -106,6 +106,22 @@ describe("RevealResult", () => {
     const actions = screen.getByRole("button", { name: "결과 저장하기" }).parentElement;
     expect(actions).toHaveClass("flex-row");
     expect(screen.getByRole("button", { name: "‹ 뒤로가기" })).toBeInTheDocument();
+  });
+
+  it("stacks the heart above the baby with separate motion classes", () => {
+    render(
+      <RevealResult
+        reveal={sonReveal}
+        onReplay={onReplay}
+        onCreateNew={onCreateNew}
+      />
+    );
+
+    const heart = screen.getByRole("presentation");
+    const baby = screen.getByAltText("아들");
+    expect(heart.compareDocumentPosition(baby) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(heart).toHaveClass("animate-result-heart-float");
+    expect(baby).toHaveClass("animate-result-baby-float");
   });
 
   it("calls onReplay when clicking replay button and onCreateNew when clicking new link", () => {

@@ -116,19 +116,19 @@ export default function RevealResult({
         </h1>
 
         {/* Baby image area */}
-        <div className="relative my-6 flex h-[200px] w-full items-center justify-center">
+        <div className="my-6 flex w-full flex-col items-center gap-5">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={bubbleImgSrc}
             alt=""
-            className="absolute -top-2 h-[min(70px,18vw)] w-[min(70px,18vw)] object-contain"
+            className="h-[min(70px,18vw)] w-[min(70px,18vw)] object-contain animate-result-heart-float"
             onError={(e) => (e.currentTarget.style.display = "none")}
           />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={babyImgSrc}
             alt={isSon ? "아들" : "딸"}
-            className={`w-auto object-contain ${isSon ? "h-[min(168px,43vw)]" : "h-[min(200px,51vw)]"}`}
+            className={`w-auto object-contain animate-result-baby-float ${isSon ? "h-[min(168px,43vw)]" : "h-[min(200px,51vw)]"}`}
             onError={(e) => {
               const target = e.currentTarget;
               target.style.display = "none";

@@ -6,7 +6,7 @@ import { RevealRecord } from "@/lib/reveals/types";
 
 const sampleReveal: RevealRecord = {
   token: "test-token-123",
-  babyNickname: "깡총이",
+  babyNickname: "콩콩이",
   dueDate: "2026-12-25",
   recipientName: "할머니, 할아버지",
   babyGender: "daughter",
@@ -134,7 +134,9 @@ describe("BalloonInteraction", () => {
     });
 
     fireEvent.click(balloon);
-    expect(screen.getByText("Tab!")).toBeInTheDocument();
+    const feedback = screen.getByText("hit");
+    expect(feedback).toHaveAttribute("aria-hidden", "true");
+    expect(feedback).toHaveClass("top-[4%]", "z-20", "animate-hit-feedback");
     expect(balloon.className).toContain("animate-balloon-shake");
     act(() => vi.advanceTimersByTime(400));
     expect(balloon.className).not.toContain("animate-balloon-shake");

@@ -28,6 +28,7 @@ describe("ShareLinkDialog", () => {
     expect(screen.getByText("링크를 복사하여 카카오톡이나")).toBeInTheDocument();
     expect(screen.getByText("문자로 공유해보세요.")).toBeInTheDocument();
     expect(screen.getByRole("dialog")).toHaveClass("rounded-[10px]", "px-5", "pt-[49px]");
+    expect(screen.getByRole("dialog")).toHaveClass("bg-white");
     expect(screen.getByRole("button", { name: "닫기" })).toHaveClass("top-[29px]", "right-5");
     const copyButton = screen.getByRole("button", { name: "공유 링크 복사" });
     expect(copyButton).toHaveClass("h-[61px]");

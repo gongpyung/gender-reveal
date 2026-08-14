@@ -2,10 +2,31 @@ import { expect, test, type Page } from "@playwright/test";
 
 const appConsoleErrors = new WeakMap<Page, string[]>();
 
+async function selectDueDate(page: Page, value: string) {
+  const [year, month, day] = value.split("-").map(Number);
+  await page.getByRole("button", { name: "출산 예정일" }).click();
+  const target = page.locator(`[data-day="${value}"] button`);
+  for (let i = 0; i < 24 && !(await target.isVisible()); i++) {
+    await page.getByRole("button", { name: "다음 달로 이동" }).click();
+  }
+  await expect(target).toBeVisible();
+  await target.click();
+  await expect(page.getByRole("button", { name: "출산 예정일" })).toHaveText(
+    `${year}. ${String(month).padStart(2, "0")}. ${String(day).padStart(2, "0")}`
+  );
+}
+
+async function expectResultImagesSeparated(page: Page, gender: "son" | "daughter") {
+  const heartBox = await page.getByRole("presentation").boundingBox();
+  const babyBox = await page.getByAltText(gender === "son" ? "아들" : "딸").boundingBox();
+  if (!heartBox || !babyBox) throw new Error("Result images have no layout boxes");
+  expect(heartBox.y + heartBox.height).toBeLessThanOrEqual(babyBox.y - 8);
+}
+
 async function createShareLink(page: Page, gender: "son" | "daughter") {
   await page.goto("/gender-reveal");
-  await page.getByLabel("아기 태명").fill(gender === "son" ? "복덩이" : "깡총이");
-  await page.getByLabel("출산 예정일").fill("2026-12-25");
+  await page.getByLabel("아기 태명").fill(gender === "son" ? "복덩이" : "콩콩이");
+  await selectDueDate(page, "2026-12-25");
   await page.getByLabel("받는 사람").fill("할머니, 할아버지");
   await page.locator(`label[for='gender-${gender}']`).click();
   await page.locator("button[type='submit']").click();
@@ -43,8 +64,12 @@ test.describe("Visual Captures", () => {
     await page.getByRole("button", { name: /젠더리빌 풍선 만들기/i }).click();
     await page.screenshot({ path: `${prefix}-creator-invalid.png` });
 
+    await page.getByRole("button", { name: "출산 예정일" }).click();
+    await page.screenshot({ path: `${prefix}-due-date-picker-open.png` });
+    await page.keyboard.press("Escape");
+
     await page.getByLabel("아기 태명").fill("복덩이");
-    await page.getByLabel("출산 예정일").fill("2026-10-10");
+    await selectDueDate(page, "2026-10-10");
     await page.getByLabel("받는 사람").fill("이모");
     await page.locator("label[for='gender-son']").click({ force: true });
     await expect(page.locator("#gender-son")).toBeChecked();
@@ -70,7 +95,10 @@ test.describe("Visual Captures", () => {
     await page.screenshot({ path: `${prefix}-balloon-0.png` });
 
     const touchButton = page.getByRole("button", { name: /풍선 터치하기/i });
-    for (let i = 0; i < 9; i++) await touchButton.click();
+    await touchButton.click();
+    await expect(page.getByText("hit", { exact: true })).toBeVisible();
+    await page.screenshot({ path: `${prefix}-balloon-hit.png` });
+    for (let i = 1; i < 9; i++) await touchButton.click();
     await page.screenshot({ path: `${prefix}-balloon-9.png` });
 
     const fullMotionMode = ["no-", ["pre", "ference"].join("")].join("") as unknown as NonNullable<NonNullable<Parameters<Page["emulateMedia"]>[0]>["reducedMotion"]>;
@@ -78,12 +106,14 @@ test.describe("Visual Captures", () => {
     await touchButton.evaluate((element) => (element as HTMLButtonElement).click());
     await page.screenshot({ path: `${prefix}-burst.png` });
     await expect(page.getByText("'딸'이에요!")).toBeVisible();
+    await expectResultImagesSeparated(page, "daughter");
     await page.screenshot({ path: `${prefix}-result-daughter.png` });
 
     const sonShareLink = await createShareLink(page, "son");
     await page.goto(sonShareLink);
     await completeBalloon(page);
     await expect(page.getByText("'아들'이에요!")).toBeVisible();
+    await expectResultImagesSeparated(page, "son");
     await page.screenshot({ path: `${prefix}-result-son.png` });
 
     await page.goto("/gender-reveal/invalid-non-existent-token");

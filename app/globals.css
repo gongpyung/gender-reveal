@@ -47,8 +47,13 @@ label:has(input:focus-visible) {
   outline-offset: 3px;
 }
 
-.date-input-empty::-webkit-datetime-edit {
-  color: transparent;
+.due-date-calendar {
+  --rdp-accent-color: #232323;
+  --rdp-accent-background-color: #f2f2f2;
+  --rdp-day-width: 40px;
+  --rdp-day-height: 40px;
+  --rdp-day_button-width: 36px;
+  --rdp-day_button-height: 36px;
 }
 
 @keyframes float {
@@ -104,7 +109,21 @@ label:has(input:focus-visible) {
   }
 }
 
-@keyframes tapPop { 0% { opacity: 0; transform: translate(-50%, -50%) scale(.7); } 30% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -90%) scale(1); } }
+@keyframes resultHeartFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes resultBabyFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(3px); }
+}
+
+@keyframes hitFeedback {
+  0% { opacity: 0; transform: translate(-50%, 8px) scale(.85); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -12px) scale(1); }
+}
 @keyframes heartBurst { from { opacity: 1; transform: translate(0, 0) scale(1); } to { opacity: 0; transform: translate(20px, -80px) scale(.6); } }
 @keyframes confettiBurst { from { opacity: 1; transform: translate(0, 0) rotate(0); } to { opacity: 0; transform: translate(-20px, 90px) rotate(180deg); } }
 
@@ -127,7 +146,13 @@ label:has(input:focus-visible) {
 .animate-heart-float {
   animation: heartFloat 1.8s ease-in-out infinite;
 }
-.animate-tap-pop { animation: tapPop .6s ease-out forwards; }
+.animate-result-heart-float {
+  animation: resultHeartFloat 1.8s ease-in-out infinite;
+}
+.animate-result-baby-float {
+  animation: resultBabyFloat 1.8s ease-in-out infinite;
+}
+.animate-hit-feedback { animation: hitFeedback .6s ease-out forwards; }
 .animate-heart-burst { animation: heartBurst 1.8s ease-out forwards; }
 .animate-confetti-burst { animation: confettiBurst .9s ease-out forwards; }
 
@@ -140,7 +165,12 @@ label:has(input:focus-visible) {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
   }
-  .animate-tap-pop,
+  .animate-result-heart-float,
+  .animate-result-baby-float {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+  .animate-hit-feedback,
   .animate-heart-burst,
   .animate-confetti-burst {
     animation-duration: 0.01ms !important;

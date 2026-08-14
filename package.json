@@ -23,7 +23,9 @@
   },
   "keywords": [],
   "dependencies": {
+    "@daypicker/react": "^10.0.1",
     "@neondatabase/serverless": "^1.1.0",
+    "@radix-ui/react-popover": "^1.1.23",
     "drizzle-orm": "^0.45.2",
     "html2canvas": "^1.4.1",
     "next": "^16.3.0",

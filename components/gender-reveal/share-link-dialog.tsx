@@ -88,7 +88,7 @@ export default function ShareLinkDialog({
         role="dialog"
         aria-modal="true"
         aria-label="풍선이 완성되었어요"
-        className="relative flex w-[min(350px,100%)] flex-col items-center rounded-[10px] px-5 pb-5 pt-[49px] shadow-xl"
+        className="relative flex w-[min(350px,100%)] flex-col items-center rounded-[10px] bg-white px-5 pb-5 pt-[49px] shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <button

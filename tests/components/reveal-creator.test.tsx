@@ -3,6 +3,18 @@ import userEvent from "@testing-library/user-event";
 import { vi, describe, it, expect, beforeEach, afterEach } from "vitest";
 import CreatorPage from "@/app/gender-reveal/page";
 
+async function selectToday(user: ReturnType<typeof userEvent.setup>) {
+  await user.click(screen.getByRole("button", { name: "출산 예정일" }));
+  const today = new Date();
+  await user.click(
+    screen.getByRole("button", {
+      name: new RegExp(
+        `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`
+      ),
+    })
+  );
+}
+
 describe("CreatorPage / RevealCreator", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
@@ -19,14 +31,16 @@ describe("CreatorPage / RevealCreator", () => {
     expect(screen.getByLabelText(/받는 사람/i)).toBeInTheDocument();
   });
 
-  it("uses the approved labels, placeholders, and native date control", () => {
+  it("uses the approved labels, placeholders, and custom date control", () => {
     render(<CreatorPage />);
 
     expect(screen.getByLabelText("아기 태명")).toHaveAttribute(
       "placeholder",
-      "예시: 깡총이"
+      "예시: 콩콩이"
     );
-    expect(screen.getByLabelText("출산 예정일")).toHaveAttribute("type", "date");
+    expect(screen.getByRole("button", { name: "출산 예정일" })).toHaveTextContent(
+      "연.월.일"
+    );
     expect(screen.getByLabelText("받는 사람")).toHaveAttribute(
       "placeholder",
       "예시: 할머니, 할아버지"
@@ -59,7 +73,7 @@ describe("CreatorPage / RevealCreator", () => {
     }
     expect(screen.getByLabelText("아기 태명")).toHaveFocus();
 
-    await user.type(screen.getByLabelText("아기 태명"), "깡총이");
+    await user.type(screen.getByLabelText("아기 태명"), "콩콩이");
     expect(screen.getByLabelText("아기 태명")).toHaveAttribute(
       "aria-invalid",
       "false"
@@ -68,6 +82,18 @@ describe("CreatorPage / RevealCreator", () => {
       "aria-invalid",
       "true"
     );
+  });
+
+  it("keeps gender cards in place and separates them from the legend", () => {
+    render(<CreatorPage />);
+
+    const legend = screen.getByText("아기 성별");
+    const sonCard = screen.getByText("아들");
+    const daughterCard = screen.getByText("딸");
+
+    expect(legend).toHaveClass("mb-3");
+    expect(sonCard).not.toHaveClass("translate-x-1", "-translate-y-1");
+    expect(daughterCard).not.toHaveClass("translate-x-1", "-translate-y-1");
   });
 
   it("submits valid form data and shows share link dialog", async () => {
@@ -82,8 +108,8 @@ describe("CreatorPage / RevealCreator", () => {
 
     render(<CreatorPage />);
 
-    await user.type(screen.getByLabelText(/아기 태명/i), "깡총이");
-    await user.type(screen.getByLabelText(/출산 예정일/i), "2026-12-25");
+    await user.type(screen.getByLabelText(/아기 태명/i), "콩콩이");
+    await selectToday(user);
     await user.type(screen.getByLabelText(/받는 사람/i), "할머니, 할아버지");
     await user.click(screen.getByLabelText(/딸/i));
 
@@ -109,8 +135,8 @@ describe("CreatorPage / RevealCreator", () => {
 
     render(<CreatorPage />);
 
-    await user.type(screen.getByLabelText(/아기 태명/i), "깡총이");
-    await user.type(screen.getByLabelText(/출산 예정일/i), "2026-12-25");
+    await user.type(screen.getByLabelText(/아기 태명/i), "콩콩이");
+    await selectToday(user);
     await user.type(screen.getByLabelText(/받는 사람/i), "할머니, 할아버지");
     await user.click(screen.getByLabelText(/딸/i));
 
@@ -125,6 +151,6 @@ describe("CreatorPage / RevealCreator", () => {
       ).toBeInTheDocument();
     });
 
-    expect(screen.getByLabelText(/아기 태명/i)).toHaveValue("깡총이");
+    expect(screen.getByLabelText(/아기 태명/i)).toHaveValue("콩콩이");
   });
 });

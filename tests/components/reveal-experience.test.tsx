@@ -6,7 +6,7 @@ import { RevealRecord } from "@/lib/reveals/types";
 
 const sampleReveal: RevealRecord = {
   token: "test-token-123",
-  babyNickname: "깡총이",
+  babyNickname: "콩콩이",
   dueDate: "2026-12-25",
   recipientName: "할머니, 할아버지",
   babyGender: "daughter",
@@ -17,7 +17,7 @@ describe("RevealExperience and MissingReveal", () => {
   it("renders recipient question and initial 0 / 10 progress", () => {
     render(<RevealExperience reveal={sampleReveal} />);
 
-    expect(screen.getByText(/깡총이는/)).toBeInTheDocument();
+    expect(screen.getByText(/콩콩이는/)).toBeInTheDocument();
     expect(screen.getByText(/아들일까요\? 딸일까요\?/)).toBeInTheDocument();
     expect(screen.getByText("0 / 10")).toBeInTheDocument();
   });

@@ -93,8 +93,12 @@ export default function BalloonInteraction({
         ))}
         <BalloonParticles visible={isBursting} />
         {tapFeedbacks.map((id) => (
-          <span key={id} className="pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 text-sm font-extrabold text-[#ff9999] animate-tap-pop">
-            Tab!
+          <span
+            key={id}
+            aria-hidden="true"
+            className="pointer-events-none absolute left-1/2 top-[4%] z-20 -translate-x-1/2 text-sm font-extrabold text-[#ff9999] animate-hit-feedback"
+          >
+            hit
           </span>
         ))}
         <button
