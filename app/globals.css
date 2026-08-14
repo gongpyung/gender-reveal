@@ -49,25 +49,25 @@ label:has(input:focus-visible) {
 
 @keyframes float {
   0%, 100% {
-    transform: translateY(0);
+    transform: translateY(0) scale(var(--balloon-scale, 1));
   }
   50% {
-    transform: translateY(-6px);
+    transform: translateY(-6px) scale(var(--balloon-scale, 1));
   }
 }
 
 @keyframes shake {
-  0% { transform: rotate(0deg); }
-  20% { transform: rotate(-10deg); }
-  40% { transform: rotate(8deg); }
-  60% { transform: rotate(-6deg); }
-  80% { transform: rotate(5deg); }
-  100% { transform: rotate(0deg); }
+  0% { transform: rotate(0deg) scale(var(--balloon-scale, 1)); }
+  20% { transform: rotate(-10deg) scale(var(--balloon-scale, 1)); }
+  40% { transform: rotate(8deg) scale(var(--balloon-scale, 1)); }
+  60% { transform: rotate(-6deg) scale(var(--balloon-scale, 1)); }
+  80% { transform: rotate(5deg) scale(var(--balloon-scale, 1)); }
+  100% { transform: rotate(0deg) scale(var(--balloon-scale, 1)); }
 }
 
 @keyframes burst {
   0% {
-    transform: scale(1);
+    transform: scale(var(--balloon-scale, 1));
     opacity: 1;
   }
   60% {
@@ -100,6 +100,10 @@ label:has(input:focus-visible) {
   }
 }
 
+@keyframes tapPop { 0% { opacity: 0; transform: translate(-50%, -50%) scale(.7); } 30% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -90%) scale(1); } }
+@keyframes heartBurst { from { opacity: 1; transform: translate(0, 0) scale(1); } to { opacity: 0; transform: translate(20px, -80px) scale(.6); } }
+@keyframes confettiBurst { from { opacity: 1; transform: translate(0, 0) rotate(0); } to { opacity: 0; transform: translate(-20px, 90px) rotate(180deg); } }
+
 .animate-float {
   animation: float 2.6s ease-in-out infinite;
 }
@@ -119,6 +123,9 @@ label:has(input:focus-visible) {
 .animate-heart-float {
   animation: heartFloat 1.8s ease-in-out infinite;
 }
+.animate-tap-pop { animation: tapPop .6s ease-out forwards; }
+.animate-heart-burst { animation: heartBurst 1.8s ease-out forwards; }
+.animate-confetti-burst { animation: confettiBurst .9s ease-out forwards; }
 
 @media (prefers-reduced-motion: reduce) {
   .animate-float,

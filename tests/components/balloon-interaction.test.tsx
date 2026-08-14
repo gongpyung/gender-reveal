@@ -101,4 +101,42 @@ describe("BalloonInteraction", () => {
     });
     expect(onCompleteSpy).toHaveBeenCalledTimes(1);
   });
+
+  it("uses the balloon as the only press target with six decorative hearts", () => {
+    render(
+      <TestWrapper onTouchSpy={vi.fn()} onCompleteSpy={vi.fn()} />
+    );
+
+    const buttons = screen.getAllByRole("button");
+    expect(buttons).toHaveLength(1);
+    expect(buttons[0]).toHaveAccessibleName("풍선 터치하기 (0/10)");
+    expect(buttons[0].querySelector("img")).toHaveAttribute(
+      "src",
+      "/img/step2/balloon.png"
+    );
+    const images = Array.from(document.querySelectorAll("img"));
+    expect(images).toHaveLength(7);
+    expect(
+      images.filter((img) =>
+        ["/img/step2/heart-pink.png", "/img/step2/heart-blue.png"].includes(
+          img.getAttribute("src") ?? ""
+        )
+      )
+    ).toHaveLength(6);
+  });
+
+  it("shows tap feedback and shake state after an accepted press", () => {
+    render(
+      <TestWrapper onTouchSpy={vi.fn()} onCompleteSpy={vi.fn()} />
+    );
+    const balloon = screen.getByRole("button", {
+      name: "풍선 터치하기 (0/10)",
+    });
+
+    fireEvent.click(balloon);
+    expect(screen.getByText("Tab!")).toBeInTheDocument();
+    expect(balloon.className).toContain("animate-balloon-shake");
+    act(() => vi.advanceTimersByTime(400));
+    expect(balloon.className).not.toContain("animate-balloon-shake");
+  });
 });
