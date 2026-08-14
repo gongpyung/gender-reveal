@@ -28,7 +28,6 @@
 
    Create `.env.local` with the database connection:
 
-   ```bash
    ```dotenv
    DATABASE_URL=postgresql://user:password@host/dbname?sslmode=require
    ```

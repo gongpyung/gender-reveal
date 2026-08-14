@@ -31,12 +31,23 @@ export default function BalloonInteraction({
   const [tapFeedbacks, setTapFeedbacks] = useState<number[]>([]);
   const [isShaking, setIsShaking] = useState(false);
   const previousCount = useRef(touchCount);
+  const feedbackTimers = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
+
+  useEffect(() => {
+    return () => {
+      feedbackTimers.current.forEach((timer) => clearTimeout(timer));
+      feedbackTimers.current.clear();
+    };
+  }, []);
 
   useEffect(() => {
     if (touchCount > previousCount.current && touchCount < 10) {
       setIsShaking(true);
-      const timer = setTimeout(() => setIsShaking(false), 400);
-      return () => clearTimeout(timer);
+      const timer = setTimeout(() => {
+        feedbackTimers.current.delete(timer);
+        setIsShaking(false);
+      }, 400);
+      feedbackTimers.current.add(timer);
     }
     previousCount.current = touchCount;
   }, [touchCount]);
@@ -50,7 +61,11 @@ export default function BalloonInteraction({
   const handleTap = () => {
     if (isBursting || touchCount >= 10) return;
     setTapFeedbacks((prev) => [...prev, Date.now()]);
-    setTimeout(() => setTapFeedbacks((prev) => prev.slice(1)), 600);
+    const timer = setTimeout(() => {
+      feedbackTimers.current.delete(timer);
+      setTapFeedbacks((prev) => prev.slice(1));
+    }, 600);
+    feedbackTimers.current.add(timer);
     if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate?.(15);
     onTouch();
   };

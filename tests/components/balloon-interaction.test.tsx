@@ -139,4 +139,18 @@ describe("BalloonInteraction", () => {
     act(() => vi.advanceTimersByTime(400));
     expect(balloon.className).not.toContain("animate-balloon-shake");
   });
+
+  it("cleans up tap feedback timers when unmounted", () => {
+    const clearTimeoutSpy = vi.spyOn(globalThis, "clearTimeout");
+    const { unmount } = render(
+      <TestWrapper onTouchSpy={vi.fn()} onCompleteSpy={vi.fn()} />
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "풍선 터치하기 (0/10)" })
+    );
+
+    unmount();
+
+    expect(clearTimeoutSpy).toHaveBeenCalledTimes(2);
+  });
 });
