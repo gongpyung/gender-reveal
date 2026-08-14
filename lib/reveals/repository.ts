@@ -3,7 +3,7 @@ import { reveals } from "../db/schema";
 import { Gender, RevealInput, RevealRecord } from "./types";
 import { NeonHttpDatabase } from "drizzle-orm/neon-http";
 import * as schema from "../db/schema";
-import { db } from "../db/client";
+import { getDb } from "../db/client";
 
 export class TokenConflictError extends Error {}
 
@@ -45,69 +45,27 @@ export class DrizzleRevealStore implements RevealStore {
   }
 
   async findByToken(token: string): Promise<RevealRecord | null> {
-    try {
-      const [found] = await this.db
-        .select()
-        .from(reveals)
-        .where(eq(reveals.token, token))
-        .limit(1);
+    const [found] = await this.db
+      .select()
+      .from(reveals)
+      .where(eq(reveals.token, token))
+      .limit(1);
 
-      if (!found) {
-        return null;
-      }
-
-      return {
-        token: found.token,
-        babyNickname: found.babyNickname,
-        dueDate: found.dueDate,
-        recipientName: found.recipientName,
-        babyGender: found.babyGender as Gender,
-        createdAt: found.createdAt,
-      };
-    } catch {
+    if (!found) {
       return null;
     }
-  }
-}
 
-declare global {
-  var __memoryRevealStore: MemoryRevealStore | undefined;
-}
-
-export class MemoryRevealStore implements RevealStore {
-  public records = new Map<string, RevealRecord>();
-
-  public static getInstance(): MemoryRevealStore {
-    if (!globalThis.__memoryRevealStore) {
-      globalThis.__memoryRevealStore = new MemoryRevealStore();
-    }
-    return globalThis.__memoryRevealStore;
-  }
-
-  async insert(input: RevealInput, token: string): Promise<RevealRecord> {
-    if (this.records.has(token)) {
-      throw new TokenConflictError("Token collision");
-    }
-    const record: RevealRecord = {
-      ...input,
-      token,
-      createdAt: new Date(),
+    return {
+      token: found.token,
+      babyNickname: found.babyNickname,
+      dueDate: found.dueDate,
+      recipientName: found.recipientName,
+      babyGender: found.babyGender as Gender,
+      createdAt: found.createdAt,
     };
-    this.records.set(token, record);
-    return record;
-  }
-
-  async findByToken(token: string): Promise<RevealRecord | null> {
-    return this.records.get(token) || null;
   }
 }
 
-export function getRevealStore(): RevealStore {
-  if (
-    !process.env.DATABASE_URL ||
-    process.env.DATABASE_URL.includes("placeholder")
-  ) {
-    return MemoryRevealStore.getInstance();
-  }
-  return new DrizzleRevealStore(db);
+export function getRevealStore(): DrizzleRevealStore {
+  return new DrizzleRevealStore(getDb());
 }
