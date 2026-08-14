@@ -4,14 +4,14 @@
 
 ## Run metadata
 
-- Application deployment commit: `8af7848` (`docs: record production migration verification`)
-- Evidence test commit: `bc4fc8a` (`test: complete production acceptance evidence`)
-- Captured at: `2026-08-14 12:32 KST`
+- Application deployment commit: `e3fed2a` (`fix: wait for fonts before result capture`)
+- Evidence test commit: `03761cd` (`test: retain visual evidence and console checks`)
+- Captured at: `2026-08-14 12:48 KST`
 - Playwright/Chromium: Playwright 1.62.1 / bundled Chromium
 - Viewports: 1280×720 and 390×844
 - Canonical public production URL: [https://kongkong-gender-reveal.vercel.app/gender-reveal](https://kongkong-gender-reveal.vercel.app/gender-reveal)
-- Deployment URL: [https://gender-reveal-qz2n7w3x2-gongpyungs-projects.vercel.app](https://gender-reveal-qz2n7w3x2-gongpyungs-projects.vercel.app)
-- Vercel deployment: `dpl_HA7oaeh43XZnejCXrxdPah5YHJ5f`, target `production`, status `Ready`
+- Deployment URL: [https://gender-reveal-opr91wj0k-gongpyungs-projects.vercel.app](https://gender-reveal-opr91wj0k-gongpyungs-projects.vercel.app)
+- Vercel deployment: `dpl_EHP6ay8qjzbpbnEFoG8Rm5KZVd6Q`, target `production`, status `Ready`
 
 ## Production access and database
 
@@ -27,7 +27,7 @@
 Command:
 
 ```bash
-PLAYWRIGHT_TEST_BASE_URL=https://kongkong-gender-reveal.vercel.app npm run test:e2e -- --workers=1
+PLAYWRIGHT_TEST_BASE_URL=https://gender-reveal-opr91wj0k-gongpyungs-projects.vercel.app npm run test:e2e -- --workers=1
 ```
 
 Result: 23 passed, 3 skipped across desktop and mobile projects in the latest full Production run. The skipped cases are the desktop-only exclusion for touchscreen coverage and the two operational-error visual cases, which were run separately against the isolated unavailable-database server.
@@ -46,7 +46,7 @@ Verified scenarios:
 
 ## Visual evidence matrix
 
-The complete matrix has 13 states × 2 viewports. The 26 current-run files are under `e2e/screenshots/local/`:
+The complete matrix has 13 states × 2 viewports. The 26 current-run files are retained under `e2e/screenshots/approved/`:
 
 | State | Desktop | Mobile |
 | --- | --- | --- |
@@ -80,4 +80,4 @@ The latest local gate before the production run passed:
 - `git diff --check`
 - `node scripts/check-standalone-language.mjs`
 
-The screenshot files are generated evidence and remain ignored by Git. They were inspected during this run at desktop and mobile sizes.
+The raw local captures remain ignored by Git; the 26 reviewed evidence files are retained in `e2e/screenshots/approved/`. They were inspected during this run at desktop and mobile sizes.
