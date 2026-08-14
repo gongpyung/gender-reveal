@@ -4,8 +4,8 @@
 
 ## Run metadata
 
-- Commit SHA: `8c767b40816205af300f020f3d167eae6270105d`
-- Captured at: `2026-08-14 09:40:28 Asia/Seoul`
+- Commit SHA: `64cdaa1b232661c945b286165eee4a6885f2cd05`
+- Captured at: `2026-08-14 09:47:48 Asia/Seoul`
 - Playwright/Chromium: Playwright 1.62.1 / bundled Chromium
 - Viewports: 1280×720 and 390×844
 - Production URL: not verified in this environment
@@ -35,3 +35,5 @@
 - `DATABASE_URL` and `TEST_DATABASE_URL` were not present during this local run, so persistent creation, recipient lookup, migration preflight, and production deployment evidence remain unverified.
 - No production URL or redirect behavior is asserted until a canonical public deployment is supplied and checked anonymously.
 - The full E2E journey, result download, database lookup, and remaining visual states are unchecked because no `DATABASE_URL` was available during this run.
+- Full production-server E2E result: 4 scenarios passed (validation and visual creator states); 8 scenarios failed at the expected fail-fast database boundary with `DatabaseConfigurationError: DATABASE_URL is required`.
+- Independent review completed. The timer-cleanup finding was fixed in commit `64cdaa1`; the remaining Important findings are external database/Vercel access and the resulting unchecked production journey/evidence matrix.
