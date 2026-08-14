@@ -1,5 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
+const appConsoleErrors = new WeakMap<Page, string[]>();
+
 async function createShareLink(page: Page, gender: "son" | "daughter") {
   await page.goto("/gender-reveal");
   await page.getByLabel("아기 태명").fill(gender === "son" ? "복덩이" : "깡총이");
@@ -18,6 +20,19 @@ async function completeBalloon(page: Page) {
 }
 
 test.describe("Visual Captures", () => {
+  test.beforeEach(async ({ page }) => {
+    const errors: string[] = [];
+    appConsoleErrors.set(page, errors);
+    page.on("pageerror", (error) => errors.push(error.message));
+    page.on("console", (message) => {
+      if (message.type() === "error") errors.push(message.text());
+    });
+  });
+
+  test.afterEach(async ({ page }) => {
+    expect(appConsoleErrors.get(page) ?? []).toEqual([]);
+  });
+
   test("captures the complete creator, interaction, and result state matrix", async ({ page }, testInfo) => {
     const prefix = `e2e/screenshots/local/${testInfo.project.name}`;
     await page.emulateMedia({ reducedMotion: "reduce" });

@@ -1,5 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
 
+const appConsoleErrors = new WeakMap<Page, string[]>();
+
 async function createShareLink(
   page: Page,
   gender: "son" | "daughter" = "son"
@@ -22,6 +24,7 @@ async function completeBalloon(page: Page) {
 test.describe("Gender Reveal E2E Journey", () => {
   test.beforeEach(async ({ page }) => {
     const uncaughtErrors: string[] = [];
+    appConsoleErrors.set(page, uncaughtErrors);
     page.on("pageerror", (error) => uncaughtErrors.push(error.message));
     page.on("console", (message) => {
       if (message.type() === "error") uncaughtErrors.push(message.text());
@@ -32,6 +35,14 @@ test.describe("Gender Reveal E2E Journey", () => {
       });
     }, uncaughtErrors);
     await page.emulateMedia({ reducedMotion: "reduce" });
+  });
+
+  test.afterEach(async ({ page }, testInfo) => {
+    const errors = appConsoleErrors.get(page) ?? [];
+    const unexpectedErrors = testInfo.title.includes("server creation failure")
+      ? errors.filter((error) => !error.includes("status of 500"))
+      : errors;
+    expect(unexpectedErrors).toEqual([]);
   });
   test("downloads the result image without application console errors", async ({
     page,
